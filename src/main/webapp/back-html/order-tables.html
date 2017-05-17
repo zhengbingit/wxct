@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>微信餐厅管理平台</title>
+
+    <!-- Bootstrap -->
+    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- Datatables -->
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <!-- 封装 Ajax 请求 -->
+    <script type="text/javascript" src="../js/jquery.callback.extend.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+        });
+    </script>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="wxct-backindex.html" class="site_title">
+                        <span>微信餐厅管理平台</span></a>
+                </div>
+                <div class="clearfix"></div>
+                <br/>
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li><a><i class="fa fa-desktop"></i> 订单管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="order-tables.html">订单列表</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 菜品管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="food-tables.html">菜品信息管理</a></li>
+                                    <li><a href="foodgroup-tables.html">菜品分类信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 桌台管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="table-tables.html">桌台信息管理</a></li>
+                                    <li><a href="tablegroup-tables.html">桌台分类信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 服务员管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="admin-tables.html">服务员信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-table"></i> 其它 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="other-tables.html">其它信息</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /sidebar menu -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                               aria-expanded="false">
+                                管理员
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li>
+                                    <a href="javascript:;">
+                                        <span>设置</span>
+                                    </a>
+                                </li>
+                                <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> 注销</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div id="pageContent" class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>订单信息
+                            <small>可对所有菜品信息进行管理</small>
+                        </h3>
+                    </div>
+
+                    <div class="title_right">
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>订单详情列表</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <p class="text-muted font-13 m-b-30">
+                                    可查看所有订单并进行排序、搜索和删除
+                                </p>
+
+                                <table id="datatable-responsive"
+                                       class="table table-striped jambo_table bulk_action table-bordered dt-responsive bulk_action nowrap"
+                                       cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th>
+                                            <input type="checkbox" id="check-all" class="flat">
+                                        </th>
+                                        <th class="column-title">订单号</th>
+                                        <th class="column-title">下单时间</th>
+                                        <th class="column-title">总价</th>
+                                        <th class="column-title">折扣</th>
+                                        <th class="column-title">实收</th>
+                                        <th class="column-title">管理员</th>
+                                        <th class="column-title">桌台</th>
+                                        <th class="column-title"><span class="nobr">详情</span></th>
+                                        <th class="bulk-actions dropdown" colspan="8">
+                                            <a class="antoo dropdown-toggle" data-toggle="dropdown" role="button"
+                                               style="color:#fff; font-weight:500;">订单项 ( <span
+                                                    class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">删除</a></li>
+                                            </ul>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="even pointer">
+                                        <td class="a-center ">
+                                            <input type="checkbox" class="flat" name="table_records">
+                                        </td>
+                                        <td class=" ">1</td>
+                                        <td class=" ">2017-5-17 15:17:29</td>
+                                        <td class=" ">34.00元</td>
+                                        <td class=" ">1</td>
+                                        <td class=" ">34.00元</td>
+                                        <td class=" ">管理员1</td>
+                                        <td class=" ">大厅1号</td>
+                                        <td class=" last"><a href="#" data-toggle="modal"
+                                                             data-target=".bs-example-modal-lg">查看</a>
+                                        </td>
+                                    </tr>
+                                    <tr class="even pointer">
+                                        <td class="a-center ">
+                                            <input type="checkbox" class="flat" name="table_records">
+                                        </td>
+                                        <td class=" ">1</td>
+                                        <td class=" ">2017-5-17 15:17:28</td>
+                                        <td class=" ">34.00元</td>
+                                        <td class=" ">1</td>
+                                        <td class=" ">34.00元</td>
+                                        <td class=" ">管理员1</td>
+                                        <td class=" ">大厅1号</td>
+                                        <td class=" last"><a href="#" data-toggle="modal"
+                                                             data-target=".bs-example-modal-sm">查看</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- modals -->
+                    <!-- Small modal -->
+                    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel2">订单详情</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>订单号：1</h5>
+                                    <p style="border-bottom: 1px dashed">宫保鸡丁 18.00元 x1 共计 18元</p>
+                                    <p style="border-bottom: 1px dashed">鱼香茄子 16.00元 x1 共计 16元</p>
+                                    <p align="right">操作员：管理员1</p>
+                                    <p align="right">应收：34.00元</p>
+                                    <p align="right">2017-5-17 17:54:24</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /modals -->
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="../vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="../vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="../vendors/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="../vendors/iCheck/icheck.min.js"></script>
+<!-- Datatables -->
+<script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="../build/js/custom.min.js"></script>
+</body>
+</html>

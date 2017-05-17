@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试Ajax</title>
+    <script src="../asset/js/jquery-3.2.1.min.js"></script>
+    <script src="../asset/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+        function cookieF() {
+            var str = $("#txt1").val();
+            $.cookie("txt", str);
+            alert(str);
+        }
+        $(document).ready(function(){
+            $("#jqget").click(function () {
+                $.get("../ajax?name=zhengbin", function (data, status) {
+                    alert("数据 = " + data.id + "\n 参数 = " + status);
+                });
+            });
+        });
+        
+        $(document).ready(function () {
+            $("#jqpost").click(function () {
+                $.post("../ajax",{
+                    id : 1,
+                    name : "大厅2号"
+                },function (data, status) {
+                    alert("数据 = " + data.id + "\n参数 = " + status);
+                })
+            });
+        });
+
+        $(function () {
+           $("#jqget").click(function () {
+                alert(321);
+           });
+        });
+
+        window.onload = function () {
+            var str = $.cookie("txt");
+            alert(str);
+            if (str != null) {
+                $("#txt1").val(str);
+            }
+        };
+
+        function loadXMLDoc() {
+            var request;
+            if (window.XMLHttpRequest)
+            {// code for IE7+, Firefox, Chrome, Opera, Safari
+                request=new XMLHttpRequest();
+            }
+            else
+            {// code for IE6, IE5
+                request=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    alert(request.responseText);
+                    var json = eval("("+request.responseText+")");
+                    document.getElementById("myDiv").innerHTML = "id="+json.id + " ,name=" + json.name;
+                }
+            }
+            request.open("GET", "../ajax?name=zhengbin", true);
+            request.send();
+        }
+
+        function showHint(str)
+        {
+            alert("change")
+            var xmlhttp;
+            if (str.length==0)
+            {
+                document.getElementById("txtHint").innerHTML="";
+                return;
+            }
+            if (window.XMLHttpRequest)
+            {// code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp=new XMLHttpRequest();
+            }
+            else
+            {// code for IE6, IE5
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+                }
+            }
+            xmlhttp.open("GET","/ajax/gethint.asp?q="+str,true);
+            xmlhttp.send();
+        }
+    </script>
+</head>
+<body>
+    <div id="myDiv"><h3>Let AJAX change this text</h3></div>
+    <button type="button" onclick="loadXMLDoc()">Change Content</button>
+
+    <br><br><br>
+    <h3>请在下面的输入框中键入字母（A - Z）：</h3>
+    <form action="">
+        <!--姓氏12：<input type="text" id="txt1" onkeyup="showHint(this.value)" />-->
+        姓氏12：<input type="text" id="txt1"/>
+        <input type="button" onclick="cookieF()" value="提交">
+    </form>
+    <p>建议：<span id="txtHint"></span></p>
+    <br><br><br>
+    <button id="jqget" onclick="">通过 jQuery 发送 GET 请求</button>
+    <br><br><br>
+    <button id="jqpost" onclick="">通过 jQuery 发送 POST 请求</button>
+</body>
+</html>

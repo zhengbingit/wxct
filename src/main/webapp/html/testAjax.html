@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试Ajax 前后端分离</title>
+    <script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.sha1.js"></script>
+    <script type="text/javascript">
+        $(function () {
+//            alert((1.2).toFixed(2));
+            getJson();
+//            testPush();
+        });
+        function getJson() {
+            console.info("getJson = " + 123);
+            var json;
+            $.ajax({
+//                url : '../ajaxdemo',
+//                url : '../home',
+                url : '../ajax',
+                type : 'POST',
+                data : 'id=2013700&name=12',
+                async:false,
+                success:function(data){
+//                    successCallback(data);
+                    alert("succes");
+                    json = data;
+                }, error: function() {
+                    alert("error");
+                }
+
+            });
+            successCallback(json);
+        }
+
+        function testPush() {
+            var now = Date.now();
+            var appKey = $.sha1("A6949744508643" + "UZ" + "5A06C422-7C29-E2DF-02DA-23FC5BD94DBD" + "UZ" + now) + "." + now;
+            $.ajax({
+                url : 'https://p.apicloud.com/api/push/message',
+                method : "POST",
+                headers : {
+                    'X-APICloud-AppId' : 'A6949744508643',
+                    'X-APICloud-AppKey' : appKey
+                },
+                dataType : 'JSON',
+                data : {
+                    'values' : {
+                        "title" : "消息标题",
+                        "content" : "消息内容",
+                        "type" : 1, //– 消息类型，1:消息 2:通知
+                        "platform" : 2 //0:全部平台，1：ios, 2：android
+                        //    "groupName" : "department", //推送组名，多个组用英文逗号隔开.默认:全部组。eg.group1,group2 .
+                        //    "userIds" : "testId" //推送用户id, 多个用户用英文逗号分隔，eg. user1,user2。
+                    }
+                },
+                success : function () {
+                    alert(1);
+                },
+                error : function (data) {
+                    alert(JSON.stringify(data));
+                }
+            });
+        }
+
+        function successCallback(data) {
+            var json = eval(data);
+            console.info("data " + data);
+            console.info("json " + json);
+            var foodGroupsLength = json.length;
+            console.info("foodGroupsLength" + foodGroupsLength);
+            for (var i = 0;i < foodGroupsLength;i++) {
+                var group = json[i];
+                var groupHtml = "<tr><td>" + group.id + "</td>" + "<td>" + group.name + "</td></tr>";
+
+                var foodsHtml = "";
+                var foodGroups = group.foodList;
+                for (var j = 0;j < foodGroups.length;j++) {
+                    foodsHtml += "<tr><td>" + foodGroups[j].name + "</td>" + "<td>" + foodGroups[j].price + "</td></tr>";
+                }
+                $('table').append(groupHtml + foodsHtml);
+            }
+        }
+    </script>
+</head>
+<body>
+    <table>
+        <th>学号</th>
+        <th>姓名</th>
+    </table>
+    <button type="button" onclick="getJson();">获取后台数据</button>
+    <a href="../img/home/LOGO.png">点击下载LOGO图片</a>
+</body>
+</html>

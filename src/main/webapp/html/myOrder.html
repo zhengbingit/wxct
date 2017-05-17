@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <meta name="msapplication-tap-highlight" content="no">
+    <META HTTP-EQUIV="expires" CONTENT="0">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <script>
+        var iWidth = document.documentElement.clientWidth;
+        document.getElementsByTagName('html')[0].style.fontSize = iWidth / 16 + 'px';
+    </script>
+    <link rel="stylesheet" href="../css/css_reset.css"/>
+    <link rel="stylesheet" href="../css/index.css"/>
+    <script src="../js/jquery-1.8.0.min.js"></script>
+    <script src="../js/iscroll-lite.js"></script>
+    <script type="text/javascript" src="../js/jquery.callback.extend.js"></script>
+    <script type="text/javascript" src="../js/jquery.callback.mobile.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../js/constant.js"></script>
+    <script type="text/javascript" src="../js/saveData.js"></script>
+
+    <script>
+        // iScroll插件 实现APP操作 begin
+        var myScroll;
+        function loaded() {
+            myScroll = new IScroll('.orderTi', {
+                mouseWheel: true,
+                tap: true,
+                click: true,
+                bounce: false,
+                checkDOMChanges: true,
+                hScroll: true
+            });
+        }
+        window.addEventListener("DOMContentLoaded", loaded, false);
+        // iScroll插件 实现APP操作 end
+
+        /**
+         * 毫秒时间格式化
+         * @returns {string}
+         */
+        Date.prototype.toLocaleString = function() {
+            return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " + this.getHours() + ":" + this.getMinutes() + ":" + this.getSeconds();
+        };
+
+        var tableName;
+        // 打开页面后开始执行
+        $(function () {
+            console.info("订单结算页面加载。。。");
+            // 从服务端获得信息，初始化 我的订单 begin
+            var url = "../myOrder";
+            var success = function (data) {
+                console.log(data);
+                // 桌台名
+                tableName = data.table_name;
+                $("#tableNoTop").html(tableName);
+                // 订单 id
+                $("#orderNum").html(data.id);
+                $("#orderRemark").html(data.remark);
+                var time = data.time;
+                $("#orderTime").html(new Date(time*1000).toLocaleString());
+                $("#endPrice").html(data.real_price.toFixed(2));
+                $.loadingClose();
+                var orderInfos = data.order_infos;
+                for (var i = 0; i < orderInfos.length; i++) {
+                    var order = orderInfos[i];
+                    var realprice = '', speprice = '', dsnHtml = '';
+                    realprice = '<i  id="price' + order.food_id + '">' + (order.total_price) + '</i>';
+                    speprice = '<i style="" id="special' + order.foodId + '">' + (order.price).toFixed(2) + '</i> ';
+                    var dsnHtml = '';
+                    var orderRemark = order.remark;
+                    if (orderRemark.length != 0) {
+                        dsnHtml = '	<input class="beizhu_return" id="beizhu' + order.food_id + '" type="text" readonly="readonly"  style="display: inline-block;" value="' + orderRemark + '">';
+                    }
+
+                    var liHtml = '';
+                    if (orderRemark.length == 0) {
+                        liHtml = '<li class="clearfix">' + '<div class="orderTi_left" style="margin-top: 0rem;">';
+                    } else {
+                        liHtml = '<li class="clearfix">' + '<div class="orderTi_left">';
+                    }
+                    var orderUlHtml = liHtml + '	<strong>' + order.food_name + '</strong>    <span>&nbsp;<i>￥</i>' + speprice + '/份   </span>' + '</div>'
+                        + '<div class="orderTi_right" >' + '	<span>x</span><span class="right_number">' + order.num + '</span>' + '</div>'
+                        + '<div class="des_text" id="' + order.food_id + '">' + dsnHtml + '</div>' + '</li>';
+                    $("#order_ul").append(orderUlHtml);
+                }
+                loaded();
+                myScroll.refresh();
+                // 显示订单详情
+                afterInit()
+            };
+            var error = function () {
+            };
+            var tableId = localData.get('tableId');
+            $.jsonpAjaxDaAsync(url, success, error, "tableId=" + tableId);
+            // 从服务端获得信息，初始化 订单详情 end
+        });
+
+        // 一键催单
+        function urgeOrder() {
+            console.info("催单。。。");
+            var success = function (data) {
+                alert("已催单，马上马上，马上就来~");
+            };
+            var error = function (data) {
+            };
+            var url = '../urgeOrder';
+            var data = 'tableName='+tableName;
+            $.jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        // 取消订单
+        function cancelOrder() {
+            var success = function () {
+                
+            };
+            var url = '';
+            var data = '';
+
+        }
+        
+        //加载后
+        function afterInit() {
+            $(".orderTi").show();
+        }
+    </script>
+</head>
+<body style="background: #eee;">
+<!--订单信息 begin-->
+<article class="orderTi" style="">
+    <div style="padding-bottom: 20%; background: #eee;">
+        <!--桌台号 begin-->
+        <div class="top_content">
+            <h4 id="tableNoTop"></h4>
+        </div>
+        <!--桌台号 end-->
+
+        <div class="foot_wrap">
+            <ul class="fTitle" style="padding: 0%;">
+                <li class="orderDesc_li">
+                    <span>订单号：
+                        <b id="orderNum"></b>
+					</span>
+                </li>
+            </ul>
+        </div>
+
+        <!--订单菜品列表 begin-->
+        <div class="center_content">
+            <div class="content_wrap">
+                <ul id="order_ul" class="sts">
+                    <!--<li class="clearfix">-->
+                        <!--<div class="orderTi_left" style="margin-top: 0rem;"><strong>宫保鸡丁</strong> <span>&nbsp;<i>￥</i><i>18.00</i> /份   </span>-->
+                        <!--</div>-->
+                        <!--<div class="orderTi_right"><span>x</span><span class="right_number">1</span></div>-->
+                        <!--<div class="des_text">-->
+                            <!--<input class="beizhu_return" id="beizhu1" type="text" readonly="readonly" style="display: inline-block;">-->
+                        <!--</div>-->
+                    <!--</li>-->
+                    <!--<li class="clearfix">-->
+                        <!--<div class="orderTi_left"><strong>鱼香茄子</strong> <span>&nbsp;<i>￥</i><i style="" id="special2">16.00</i> /份   </span>-->
+                        <!--</div>-->
+                        <!--<div class="orderTi_right"><span>x</span><span class="right_number">1</span></div>-->
+                        <!--<div class="des_text" id="2">-->
+                            <!--<input class="beizhu_return" id="beizhu2" type="text" readonly="readonly" style="display: inline-block;" value="少放辣、少放油">-->
+                        <!--</div>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+        </div>
+        <!--订单菜品列表 end-->
+
+        <!--订单应付金额 begin-->
+        <div class="payMent">
+            <span>付款金额：</span>
+            <i>￥</i>
+            <i id="endPrice">36.00</i>
+        </div>
+        <div class="payMent" style="font-size: 16px;">
+            <span>下单时间：</span>
+            <i id="orderTime" style="color: #808785;"></i>
+        </div>
+        <!--订单应付金额 end-->
+
+        <!--订单备注 begin-->
+        <div class="foot_wrap">
+            <ul class="fTitle">
+                <li class="orderDesc_li">
+                    <span>备注：
+                        <b id="orderRemark"></b>
+					</span>
+                </li>
+            </ul>
+        </div>
+        <!--订单备注 end-->
+    </div>
+</article>
+<!--订单信息 end-->
+
+<footer class="order_foot">
+    <div class="xia" style="height: 5.6rem">
+        <div id="urgeOrder" style="margin-top: 0.8rem;background-color: #00AF28" onclick="urgeOrder()">一键催促</div>
+        <div id="cancelOrder" style="margin-top: 0.4rem;">取消订单</div>
+    </div>
+    <!--<div class="xia" style="">-->
+        <!---->
+    <!--</div>-->
+</footer>
+
+</body>
+</html>

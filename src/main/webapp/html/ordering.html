@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh" style="font-size: 46.875px;">
+<head>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <META HTTP-EQUIV="expires" CONTENT="0">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <title>选择菜品</title>
+    <script>
+        var iWidth = document.documentElement.clientWidth;
+        document.getElementsByTagName('html')[0].style.fontSize = iWidth / 16 + 'px';
+    </script>
+    <!--放大菜品图片-->
+    <link rel="stylesheet" href="../css/photoswipe.css">
+    <link rel="stylesheet" href="../css/css_reset.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" type="text/css" href="../css/OrderMenuCssnew2.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/base.css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../css/ordering.css">
+</head>
+<body class="ordering">
+<input type="hidden" id="scoll" value="1">
+<input type="hidden" id="moshi" value="">
+
+<!--菜品内容 begin-->
+<div id="main" style="display: block;">
+
+    <!--菜品搜索框 begin-->
+    <div id="head" class="head">
+        <div class="label">
+            <i></i>
+            <input type="text" id="tableName" placeholder="点此输入要搜索的菜名或首字母">
+        </div>
+    </div>
+    <!--菜品搜索框 end-->
+
+    <!--左边菜品分类 begin-->
+    <div id="left_wrap" class="order_left">
+        <div id="scroller"
+             style="transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1); transition-duration: 0ms; transform: translate(0px, 0px) translateZ(0px);">
+            <ul id="diffCai">
+                <!--<li class="active" data="1471046180498" id="li1471046180498">-->
+                    <!--早点系列(<a class="show_all">4</a>)-->
+                    <!--<i class="show_all_hide">4</i>-->
+                <!--</li>-->
+                <!--&lt;!&ndash; id表示对应的分类id，对应菜品的class，通过这个来区分不同分类的菜品 &ndash;&gt;-->
+                <!--<li class="unactive" data="1471046179337" id="li1471046179337">-->
+                    <!--凉菜系列(<a class="show_all">2</a>)-->
+                    <!--<i class="show_all_hide">2</i>-->
+                <!--</li>-->
+                <!--<li class="unactive" data="1471046179812" id="li1471046179812">-->
+                    <!--盖饭系列(<a class="show_all">1</a>)-->
+                    <!--<i class="show_all_hide">1</i>-->
+                <!--</li>-->
+            </ul>
+            <div class="right_jian" style="width: 100%; height: 1.3rem;"></div>
+        </div>
+    </div>
+    <!--左边菜品分类 end-->
+
+    <!-- 右边菜品 begin-->
+    <div id="right_wrap" class="order_right">
+        <div id="scroller1"
+             style="transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); transition-duration: 200ms; transform: translate(0px, 0px) translateZ(0px);">
+            <ul id="dishUL">
+                <!--<li id="li2078928" data="1471046180498" class="ab1 pub li1471046180498">-->
+                    <!--<input type="hidden" class="search_key" value="油饼__yb">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;">-->
+                        <!--<s class="name"-->
+                           <!--style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">油饼</s>&nbsp;-->
+                        <!--<span>￥</span>-->
+                        <!--<span id="price2078928" class="singlePrice" style="font-size:0.7rem;color:#FF1717">2.00</span>-->
+                        <!--<s class="danwei">/个</s>-->
+                    <!--</p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed">-->
+                            <!--<a id="swip_a"-->
+                               <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465718853408.jpg">-->
+                                <!--<img data-id="2078928"-->
+                                     <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465718853439.jpg"-->
+                                     <!--alt="油饼(￥2.00)"-->
+                                     <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465718853439.jpg"-->
+                                     <!--style="display: inline;"></a>-->
+                        <!--</div>-->
+                        <!--<div class="food_img" style="border:0">-->
+                            <!--<p style="text-decoration:line-through">原价<s class="yj"  id="yuanjia2078928">3.00</s></p>-->
+                            <!--<span>已售<strong>3394</strong>份</span>-->
+                        <!--</div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b>-->
+                    <!--<img id="guqing2078928" class="guqing plushao" style="display:block;" onclick="guqing()"-->
+                         <!--src="../img/index/order/guqing.png" alt="">-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+                <!--<li id="li2078926" data="1471046180498" class="ab1 pub li1471046180498">-->
+                    <!--<input type="hidden"-->
+                                                                                               <!--class="search_key"-->
+                                                                                               <!--value="骨汤鲜肉馄饨__gtxrht">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;"><s class="name"-->
+                                                                                              <!--style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">骨汤鲜肉馄饨</s>&nbsp;<span>￥</span><span-->
+                            <!--id="price2078926" class="singlePrice" style="font-size:0.7rem;color:#FF1717">6.00</span><s-->
+                            <!--class="danwei">/碗</s></p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed"><a class="swip_a"-->
+                                                                            <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465717616651.jpg"><img-->
+                                <!--data-id="2078926"-->
+                                <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465717616682.jpg"-->
+                                <!--alt="骨汤鲜肉馄饨(￥6.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465717616682.jpg"-->
+                                <!--style="display: inline;"></a></div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>1866</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b><img id="guqing2078926" class="guqing plushao" style="display:block;"-->
+                                              <!--onclick="guqing()" src="../img/index/order/guqing.png" alt="">-->
+                    <!--<p class="food_note"></p></li>-->
+                <!--<li id="li2078933" data="1471046180498" class="ab1 pub li1471046180498">-->
+                    <!--<input type="hidden" class="search_key" value="荠菜鸡蛋包__jcjdb">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;">-->
+                        <!--<s class="name" style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">荠菜鸡蛋包</s>&nbsp;<span>￥</span><span-->
+                            <!--id="price2078933" class="singlePrice" style="font-size:0.7rem;color:#FF1717">2.00</span><s-->
+                            <!--class="danwei">/个</s></p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed"><a class="swip_a"-->
+                                                                            <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465743647957.jpg"><img-->
+                                <!--data-id="2078933"-->
+                                <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465743648004.jpg"-->
+                                <!--alt="荠菜鸡蛋包(￥2.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465743648004.jpg"-->
+                                <!--style="display: inline;"></a></div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>890</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b><img id="plushao2078933" onclick="plus(2078933,true)" class="plushao"-->
+                                              <!--style="display: block;" src="../img/index/order/pulsCircle.png" alt="">-->
+                    <!--<div id="plusbox2078933" class="plusbox clearfix" style="display: none;">-->
+                        <!--<div ontouchend="mu(2078933)" id="jian2078933" class="jian"><i></i></div>-->
+                        <!--<input ontouchstart="numShow(2078933)" readonly="readonly" id="2078933" type="number" value="0"-->
+                               <!--class="input caishu">-->
+                        <!--<div id="jia2078933" ontouchend="openJiaJian(2078933)" class="jia"><i></i></div>-->
+                    <!--</div>-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+                <!--<li id="li2078932" data="1471046180498" class="ab1 pub li1471046180498">-->
+                    <!--<input type="hidden" class="search_key" value="酱香肉包__jxrb">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;"><s class="name"-->
+                                                                                              <!--style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">酱香肉包</s>&nbsp;<span>￥</span><span-->
+                            <!--id="price2078932" class="singlePrice" style="font-size:0.7rem;color:#FF1717">2.00</span><s-->
+                            <!--class="danwei">/个</s></p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed"><a class="swip_a"-->
+                                                                            <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465719050329.jpg"><img-->
+                                <!--data-id="2078932"-->
+                                <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465719050376.jpg"-->
+                                <!--alt="酱香肉包(￥2.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1465719050376.jpg"-->
+                                <!--style="display: inline;"></a></div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>2636</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b><img id="plushao2078932" onclick="plus(2078932,true)" class="plushao"-->
+                                              <!--style="display: block;" src="../img/index/order/pulsCircle.png" alt="">-->
+                    <!--<div id="plusbox2078932" class="plusbox clearfix" style="display: none;">-->
+                        <!--<div ontouchend="mu(2078932)" id="jian2078932" class="jian"><i></i></div>-->
+                        <!--<input ontouchstart="numShow(2078932)" readonly="readonly" id="2078932" type="number" value="0"-->
+                               <!--class="input caishu">-->
+                        <!--<div id="jia2078932" ontouchend="openJiaJian(2078932)" class="jia"><i></i></div>-->
+                    <!--</div>-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+                <!--<li id="li2078936" data="1471046179337" class="ab1 pub li1471046179337">-->
+                    <!--<input type="hidden" class="search_key" value="自制酱牛肉__zzjnr">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;"><s class="name"-->
+                                                                                              <!--style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">自制酱牛肉</s>&nbsp;<span>￥</span><span-->
+                            <!--id="price2078936" class="singlePrice" style="font-size:0.7rem;color:#FF1717">22.00</span><s-->
+                            <!--class="danwei">/份</s></p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed"><a class="swip_a"-->
+                                                                            <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707328235.jpg"><img-->
+                                <!--data-id="2078936"-->
+                                <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707328454.jpg"-->
+                                <!--alt="自制酱牛肉(￥22.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707328454.jpg"-->
+                                <!--style="display: inline;"></a></div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>64</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b><img id="plushao2078936" onclick="plus(2078936,true)" class="plushao"-->
+                                              <!--style="display:block;" src="../img/index/order/pulsCircle.png" alt="">-->
+                    <!--<div id="plusbox2078936" class="plusbox clearfix" style="display:none;">-->
+                        <!--<div ontouchend="mu(2078936)" id="jian2078936" class="jian"><i></i></div>-->
+                        <!--<input ontouchstart="numShow(2078936)" readonly="readonly" id="2078936" type="number" value="0"-->
+                               <!--class="input caishu">-->
+                        <!--<div id="jia2078936" ontouchend="openJiaJian(2078936)" class="jia"><i></i></div>-->
+                    <!--</div>-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+                <!--<li id="li2078937" data="1471046179337" class="ab1 pub li1471046179337">-->
+                    <!--<input type="hidden" class="search_key" value="蒜泥茄子__snqz">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;"><s class="name"-->
+                                                                                              <!--style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">蒜泥茄子</s>&nbsp;<span>￥</span><span-->
+                            <!--id="price2078937" class="singlePrice" style="font-size:0.7rem;color:#FF1717">6.00</span><s-->
+                            <!--class="danwei">/份</s></p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed"><a class="swip_a"-->
+                                                                            <!--href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707343485.jpg"><img-->
+                                <!--data-id="2078937"-->
+                                <!--data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707343500.jpg"-->
+                                <!--alt="蒜泥茄子(￥6.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707343500.jpg"-->
+                                <!--style="display: inline;"></a></div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>114</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b><img id="guqing2078937" class="guqing plushao" style="display:block;"-->
+                                              <!--onclick="guqing()" src="../img/index/order/guqing.png" alt="">-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+                <!--<li id="li2078879" data="1471046179812" class="ab1 pub li1471046179812">-->
+                    <!--<input type="hidden" class="search_key" value="红烧肉盖饭__hsrgf">-->
+                    <!--<p class="food_infor" style="color:#000;height:1rem;line-height:1rem;">-->
+                        <!--<s class="name" style="height:1rem;line-height:1rem;width:4rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">红烧肉盖饭</s>&nbsp;<span>￥</span>-->
+                        <!--<span id="price2078879" class="singlePrice" style="font-size:0.7rem;color:#FF1717">15.00</span>-->
+                        <!--<s class="danwei">/份</s>-->
+                    <!--</p>-->
+                    <!--<div class="food_des">-->
+                        <!--<div class="food_img" style="background:#ededed">-->
+                            <!--<a class="swip_a" href="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707674250.jpg">-->
+                                <!--<img data-id="2078879" data-original="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707674282.jpg"-->
+                                <!--alt="红烧肉盖饭(￥15.00)"-->
+                                <!--src="http://www.wecaidan.com/uploadFiles/UpDishesImg/27316/1489707674282.jpg"-->
+                                <!--style="display: inline;">-->
+                            <!--</a>-->
+                        <!--</div>-->
+                        <!--<div class="food_img" style="border:0"><span>已售<strong>660</strong>份</span></div>-->
+                        <!--<div style="width:100%;height:0.001rem;clear:both"></div>-->
+                    <!--</div>-->
+                    <!--<b class="sport"></b>-->
+                    <!--<img id="plushao2078879" onclick="plus(2078879,true)" class="plushao" style="display:block;" src="../img/index/order/pulsCircle.png" alt="">-->
+                    <!--<div id="plusbox2078879" class="plusbox clearfix" style="display:none;">-->
+                        <!--<div ontouchend="mu(2078879)" id="jian2078879" class="jian"><i></i></div>-->
+                        <!--<input ontouchstart="numShow(2078879)" readonly="readonly" id="2078879" type="number" value="0" class="input caishu">-->
+                        <!--<div id="jia2078879" ontouchend="openJiaJian(2078879)" class="jia"><i></i></div>-->
+                    <!--</div>-->
+                    <!--<p class="food_note"></p>-->
+                <!--</li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- 右边菜品 end-->
+    <a id="five_texiao">0</a>
+</div>
+<!--菜品内容 end-->
+
+<!--页脚 购物车——折叠 begin-->
+<footer class="foot">
+    <div class="b_foot">
+        <div class="foot_text clearfix">
+            <span class="none">快去点餐吧~</span>
+            <span class="zTotal" style="display: none; color: #F26C60; font-size: 0.85rem; font-weight: 900;">￥<i
+                class="zMoney allprice">0</i>&nbsp;<i
+                style="display: none;" class="memberpriceall">0</i></span>
+            <p class="ok" onclick="next()">选好了</p>
+        </div>
+        <div class="pic_icon">
+            <img src="../img/index/order/diancai.png" alt="">
+        </div>
+        <div class="pic_icon1" onclick="gouUp()" style="display: none;">
+            <img src="../img/index/order/diancai1.png" alt=""> <i class="zShu allNum">0</i>
+        </div>
+    </div>
+</footer>
+<!--页脚 购物车——折叠 end-->
+
+<!--页脚 购物车——展开 begin-->
+<div class="bgUp" style="display: none;"></div>
+<div class="toUp" style="">
+    <div class="clean">
+        <div class="pic_icon1" onclick="gouDown()" style="display: block;">
+            <img src="../img/index/order/diancai1.png" alt=""> <i id="zShu" class="hideone allNum">0</i>
+        </div>
+        <p id="sur_text"></p>
+        <span onclick="clearDishes()">清空菜品</span>
+    </div>
+    <div class="up_box"
+         style="width: 100%; height: 80%; max-height: 80%; overflow: scroll; overflow-x: hidden; background: white;">
+        <ul id="listSur" style="display: none;" class="listfood">
+        </ul>
+        <ul id="listfood" class="listfood">
+        </ul>
+    </div>
+    <div class="bottom">
+        <div class="zong">
+            合计：<i style="color: #f26c60">￥</i><i class="heji allprice" style="color: #f26c60">21.05</i> &nbsp; <i
+                style="display: none;" class="memberpriceall">21.05</i>
+        </div>
+        <div id="zong_ok" onclick="next()" class="zong_ok">下一步</div>
+    </div>
+</div>
+<!--页脚 购物车——展开 end-->
+
+<!--菜品详情页 begin-->
+<div style="display: none;" class="page-dishesdetils">
+    <div id="primary" class="swiper-container">
+        <div id="swiper" class="swiper-wrapper"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="carte">
+            <span class="less min"></span> <input class="quantity text_box" type="number" name="" id="" value="0"/>
+            <span class="plus add"></span>
+        </div>
+    </div>
+</div>
+<!--菜品详情页 end-->
+
+<script src="../js/jquery-1.8.0.min.js"></script>
+<!-- 手机滑动效果 -->
+<script src="../js/iscroll-lite.js"></script>
+<script type="text/javascript" src="../js/jquery.callback.extend.js"></script>
+<script type="text/javascript" src="../js/jquery.callback.mobile.js"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+<!-- 一些常用 js 函数 -->
+<script type="text/javascript" src="../js/constant.js"></script>
+<script type="text/javascript" src="../js/saveData.js"></script>
+<script type="text/javascript" src="../js/fly.min.js"></script>
+<!-- CDN 加速 -->
+<script type="text/javascript" src="../js/klass.min.js"></script>
+im
+<!-- 菜品图片延迟加载 -->
+<script type="text/javascript" src="../js/layzload.js"></script>
+<!--  -->
+<script type="text/javascript" src="../js/keyb.js"></script>
+
+<script type="text/javascript" src="../js/code.photoswipe.jquery-3.0.5.min.js"></script>
+<script type="text/javascript" src="../js/order/ordering.js" charset="utf-8"></script>
+
+<div id="orientLayer" class="mod-orient-layer" style="display: none;">
+    <div class="mod-orient-layer__content">
+        <i class="icon mod-orient-layer__icon-orient"></i>
+    </div>
+</div>
+<script>
+    <!-- 横竖屏切换 -->
+//    orientInit();
+//    window.addEventListener('onorientationchange' in window ? 'orientationchange' : 'resize', function () {
+//        setTimeout(orientInit, 100);
+//    }, false);
+</script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta charset="UTF-8">
+    <title>点菜确认</title>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+    <meta name="msapplication-tap-highlight" content="no">
+    <META HTTP-EQUIV="expires" CONTENT="0">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <script>
+        var iWidth = document.documentElement.clientWidth;
+        document.getElementsByTagName('html')[0].style.fontSize = iWidth / 16 + 'px';
+    </script>
+    <link rel="stylesheet" href="../css/css_reset.css"/>
+    <link rel="stylesheet" href="../css/index.css"/>
+    <script src="../js/jquery-1.8.0.min.js"></script>
+    <script src="../js/iscroll-lite.js"></script>
+    <script type="text/javascript" src="../js/jquery.callback.extend.js"></script>
+    <script type="text/javascript" src="../js/jquery.callback.mobile.js"></script>
+    <script type="text/javascript" src="../js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../js/constant.js"></script>
+    <script type="text/javascript" src="../js/saveData.js"></script>
+
+    <script>
+        // iScroll插件 实现APP操作 begin
+        var myScroll;
+        function loaded() {
+            myScroll = new IScroll('.orderTi', {
+                mouseWheel: true,
+                tap: true,
+                click: true,
+                bounce: false,
+                checkDOMChanges: true,
+                hScroll: true
+            });
+        }
+        window.addEventListener("DOMContentLoaded", loaded, false);
+        // iScroll插件 实现APP操作 end
+
+        // 展示目标
+        function show(obj, obj1) {
+            $(obj).show(0);
+            var iH = $(obj1).height();
+            $(obj1).css({
+                'top': -iH,
+                'display': 'block'
+            });
+
+            $(obj1).animate({
+                'top': 0
+            }, 200);
+        }
+
+        // 隐藏目标
+        function hide(obj, obj1) {
+            var iH = $(obj1).height();
+            $(obj1).css({
+                'top': 0
+            });
+
+            $(obj1).animate({
+                'top': -iH,
+                'display': 'block'
+            }, 200, function () {
+                $(obj).hide(0);
+            });
+        }
+
+        // 打开页面后开始执行
+        $(function () {
+            console.info("订单结算页面加载。。。");
+            // cookie 中获取桌台号，桌台信息主键 id
+            var tableId = localData.get('tableId');
+            var tableName = localData.get('tableName');
+            // 桌台号，如：A2号桌
+            $("#tableNoTop").html(tableName);
+
+            var a = 1;
+            $(".orderDesc_li").on('click', function () {
+                if (a % 2 != 0) {
+                    $.inputPopu('orderDesc_li', 'orderDesc', "请输入备注...");
+                    a++;
+                }
+                else if (a == 2) {
+                    a = 1;
+                }
+            });
+
+            // 画出 "确认下单" 对话框
+            var iH = ($(window).height() - $('.con_notice').innerHeight()) / 2;
+            var iW = ($(window).width() - $('.con_notice').innerWidth()) / 2;
+            // 修改 "确认下单" 对话框样式
+            $('.con_notice').css({
+                'left': iW,
+                'top': iH
+            });
+
+            // 确认下单 弹出框 取消按钮
+            $('.cancel').on('click', function () {
+                $('.cTice_mark').hide();
+            });
+            // 隐藏 确认下单 弹出框
+            $('.cTice_mark').on('click', function () {
+                $('.cTice_mark').hide();
+            });
+
+            // 单个菜品备注
+            var _this = null;
+            $('.sts').on('click', 'li .des_text img', function () {
+                show('.single_mask', '.singleNote');
+                _this = $(this).parent('.des_text');
+                var dishesId = _this.attr("id");
+                $("#dishes_id").html(dishesId);
+                $('#dishes_area').focus();
+            });
+
+            $('.sts').on('touchend', 'li .des_text .beizhu_return', function () {
+                show('.single_mask', '.singleNote');
+                $("#dishes_area").val($(this).val());
+                $('#dishes_area').focus();
+                _this = $(this).parent('.des_text');
+                var dishesId = _this.attr("id");
+                $("#dishes_id").html(dishesId);
+            });
+            $('.single_mask').on('touchend', function () {
+                $('#dishes_area').blur();
+                hide('.single_mask', '.singleNote');
+            });
+
+            $('.singleStyle li').on('touchend', function () {
+                var val = $(this).html();
+                if ($('.cDiv textarea').val() == '') {
+                    $('.cDiv textarea').val($('.cDiv textarea').val() + "" + val);
+                } else {
+                    $('.cDiv textarea').val($('.cDiv textarea').val() + "、" + val);
+                }
+            });
+            //菜品备注
+            $('.singleQu').on('touchend', function () {
+                $('#dishes_area').blur();
+                if ($('.cDiv textarea').val() == '') {
+                    _this.find('img').css('display', 'inline-block');
+                    _this.find('input').css('display', 'none');
+                    hide('.single_mask', '.singleNote');
+                } else {
+                    _this.find('input').css('display', 'inline-block');
+                    _this.find('input').val($('.cDiv textarea').val());
+                    _this.find('img').css('display', 'none');
+                    hide('.single_mask', '.singleNote');
+                }
+                var remarks = $("#dishes_area").val();
+                if (remarks != '') {
+                    var foodArray = eval('(' + localData.get('foodArray') + ')');
+                    for (var i = 0; i < foodArray.length; i++) {
+                        if ((foodArray[i].foodId + '') == $("#dishes_id").html()) {
+                            foodArray[i].dishesRemarks = remarks;
+                        }
+                    }
+                    localData.set('foodArray', JSON.stringify(foodArray));
+                }
+                $("#dishes_area").val("");
+            });
+            // 设置桌台号
+            $("#tableId").val(getQueryString(tableId));
+            var backgroundData;
+            // 从服务端获得信息，初始化 订单详情 begin
+            var url = "../showOrder";
+            var success = function (data) {
+                console.log(data);
+                backgroundData = data;
+                $.loadingClose();
+                //商户交易方式
+                if (!$.isNull(data.endMoney)) {
+                    $("#endPrice").html(data.endMoney.toFixed(2));
+                }
+                if (!$.isNull(data.realMoney)) {
+                    $("#sale_all").html(data.realMoney.toFixed(2));
+                }
+                var foodArrayList = data.foodArrayList;
+                for (var i = 0; i < foodArrayList.length; i++) {
+                    var food = foodArrayList[i];
+                    var realprice = '', speprice = '', dsnHtml = '';
+                    realprice = '<i  id="price' + food.foodId + '">' + (food.realPrice) + '</i>';
+                    //特价
+                    if (food.dishesPrice !== food.realPrice) {
+                        speprice = '<i  id="special' + food.foodId + '">' + (food.dishesPrice).toFixed(2) + '</i> ';
+                    } else {
+                        speprice = '<i style="" id="special' + food.foodId + '">' + (food.dishesPrice).toFixed(2) + '</i> ';
+                    }
+                    dsnHtml = '	<img src="../img/note.png" alt="">' + '	<input class="beizhu_return" id="beizhu' + food.foodId + '" type="text" readonly="readonly">';
+                    $("#order_ul").append('<li class="clearfix">' + '<div class="orderTi_left">' + '	<strong>' + food.dishesName + '</strong>    <span>&nbsp;<i>￥</i>' + speprice + ($.isNull(food.unit) ? "" : food.unit) + '   </span>' + '</div>'
+                        + '<div class="orderTi_right" >' + '	<span>x</span><span class="right_number">' + food.dishesNum + '</span>' + '</div>' + '<div class="des_text" id="' + food.foodId + '">' + dsnHtml + '</div>' + '</li>')
+                }
+                loaded();
+                myScroll.refresh();
+                // 显示订单详情
+                afterInit()
+            };
+            var error = function () {
+            };
+            $.jsonpAjaxDaAsync(url, success, error, "foodArray=" + localData.get('foodArray') + "&tableId=" + $.cookie('tableId'));
+            // 从服务端获得信息，初始化 订单详情 end
+
+            // 点击确认下单
+            $("#sub").on("click", function () {
+                console.info("localData = {}", localData.get('foodArray'));
+                var rSpan = document.querySelectorAll('.right_number');
+                var cai_num = 0;
+                for (var i = 0; i < rSpan.length; i++) {
+                    cai_num += parseFloat(rSpan[i].innerHTML);
+                }
+                var totalNum = cai_num;
+                var price = $('#endPrice').html();
+                $('.contice_num').html(totalNum); //共计多少道菜
+                $('.contice_price').html(price); //共计多少钱
+                $('.cTice_mark').show();
+                // 点击确定 进行下单
+                $('.qued').on('click', function () {
+                    // 备注
+                    var remark = $('#orderDesc').val();
+                    var url = '../makeOrder';
+                    var data = "tableId="+tableId+"&foodArray="+localData.get('foodArray')+"&remark="+remark;
+                    var successCallback = function (data) {
+                        console.info("successCallback data = " + JSON.stringify(data));
+                    };
+                    var errorCallback = function (data) {
+                        console.info("errorCallback data = " + JSON.stringify(data));
+                    };
+                    $.jsonpAjaxDaAsync(url, successCallback, errorCallback, data);
+                    return false;
+                });
+            });
+            var user_info = $.cookie('user_info'); // 读取 cookie
+            if (user_info != undefined && user_info != null && user_info != "null") {
+                $("#user_info").show();
+                $("#name").html(user_info.name);
+                $("#phone").html(user_info);
+                $("#address").html(user_info.address);
+            }
+        });
+
+        //加载后
+        function afterInit() {
+            $(".orderTi").show();
+        }
+    </script>
+</head>
+<body style="background: #eee;">
+<input type="hidden" value="" id="tableId"/>
+
+<!--订单信息 begin-->
+<article class="orderTi" style="">
+    <div style="padding-bottom: 20%; background: #eee;">
+        <!--桌台号 begin-->
+        <div class="top_content">
+            <h4 id="tableNoTop"></h4>
+        </div>
+        <!--桌台号 end-->
+
+        <!--订单菜品列表 begin-->
+        <div class="center_content">
+            <div class="content_wrap">
+                <ul id="order_ul" class="sts">
+                </ul>
+            </div>
+        </div>
+        <!--订单菜品列表 end-->
+
+        <!--订单共计金额 begin-->
+        <div class="total">
+            <span>共计：</span>
+            <i>￥</i>
+            <i id="sale_all" style="margin-right: 0.5rem;"></i>
+        </div>
+        <!--订单共计金额 end-->
+
+        <!--订单应付金额 begin-->
+        <div class="payMent">
+            <span>应付：</span>
+            <i>￥</i>
+            <i id="endPrice"></i>
+        </div>
+        <!--订单应付金额 end-->
+
+        <!--订单备注 begin-->
+        <div class="foot_wrap">
+            <ul class="fTitle">
+                <li class="orderDesc_li">
+                    <span>备注：
+                        <b id="orderDesc_b">请输入备注（选填）</b>
+                        <input id="orderDesc" type="hidden" class="con_xuanze" autofocus="autofocus" placeholder="请输入备注（选填）" readonly="readonly"/>
+					</span>
+                </li>
+            </ul>
+        </div>
+        <!--订单备注 end-->
+    </div>
+</article>
+<!--订单信息 end-->
+
+<footer class="order_foot">
+    <div class="xia">
+        <div id="sub">确认下单</div>
+        <div id="save_order" style="display: none;">保存订单</div>
+    </div>
+</footer>
+
+<!--单个菜品信息配注 begin-->
+<div class="singleNote">
+    <div class="cDiv">
+        <textarea id="dishes_area" placeholder="请输入菜品备注..."></textarea>
+    </div>
+    <ul class="singleStyle clearfix">
+        <li>不要辣椒</li>
+        <li>微辣</li>
+        <li>中辣</li>
+        <li>特辣</li>
+        <li>不要蒜</li>
+        <li>少盐</li>
+        <li>少醋</li>
+        <li>少油</li>
+    </ul>
+    <span style="display: none;" id="dishes_id"></span>
+    <div class="singleQu">
+        <div class="fButton_all2">确 定</div>
+    </div>
+</div>
+<!--单个菜品信息配注 end-->
+
+<!-- 确认下单弹出框 begin -->
+<div class="cTice_mark">
+    <div class="con_notice">
+        <p>提示</p>
+        <p>
+            <span>您此次点菜共计<i class="contice_num">3</i>道，<i class="contice_price">144</i>元，下单后将不可撤销。
+            </span>
+        </p>
+        <p class="clearfix">
+            <span class="cancel">取消</span><span class="qued">确定</span>
+        </p>
+    </div>
+</div>
+<!-- 确认下单弹出框 end -->
+</body>
+</html>

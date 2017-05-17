@@ -1,0 +1,333 @@
+.page-dishesdetils .h4{
+	background: #000000;
+	color: #FFFFFF;
+	line-height: 125px;
+	text-align: center;
+	font-size:15px;
+	font-weight: 200;
+}
+.page-dishesdetils .content{
+	padding: 3%;
+	background: #000000;
+	line-height: 25px;
+	height: 15rem;
+}
+.page-dishesdetils{
+	background: #000000; 
+}
+.page-dishesdetils .swiper-container{
+	z-index: 3;
+}
+.page-dishesdetils .swiper-button-prev{
+	background-image:url("../img/dishesdetils/whiteleft.png");
+	top: 95.5%;
+	background-size: 60%;
+}
+.page-dishesdetils .swiper-button-next{
+	background-image:url("../img/dishesdetils/whiteright.png");
+	top: 95.5%;
+	background-size: 60%;
+}
+#primary{ 
+    height: 100%;
+    z-index: 1001;
+}
+.page-dishesdetils .swiper-pagination{
+	background: url(../img/dishesdetils/whiteborder.png) center no-repeat;
+	background-size:50%;
+	width: 100%;
+	height: 58px;
+	line-height: 58px;
+	font-size: 17px;
+}
+.page-dishesdetils .carte{
+    background: url(../img/dishesdetils/whiteborder.png) center top no-repeat;
+    background-size: 100%;
+    width: 50%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 1%;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+.page-dishesdetils .carte .plus{
+	width: 30px;
+	height: 39px;
+	display: inline-block;
+	background: url(../img/dishesdetils/plus.png) center no-repeat;
+	background-size: 60%;
+	float: right;
+}
+.page-dishesdetils .carte .less{
+	width: 30px;
+	height: 39px;
+	display: inline-block;
+	background: url(../img/dishesdetils/less.png) center no-repeat;
+	background-size: 60%;	
+}
+.page-dishesdetils .carte .quantity{
+	display: inline-block;
+	width: 15%;
+	background: #000000;
+	border: none;
+	outline: 0;
+	margin-left: 28%;
+	vertical-align: top;
+	height: 25px;
+	color: white;
+	margin-top: 2%;
+}
+
+/*餐厅详情*/
+.page-index	.content li{
+	height: auto;
+	line-height: 40px;
+	border-bottom: 1px solid #dddddd;
+	padding-left: 3%;
+	position:relative;
+}
+.page-index	.content li:nth-of-type(1){
+	background: url(../img/index/detail/tel_26.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+}
+.page-index	.content li:nth-of-type(2){
+	background: url(../img/index/detail/tel_26.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+}
+.page-index	.content li:nth-of-type(3){
+	background: url(../img/index/detail/add_26x26.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+}
+.page-index	.content li:nth-of-type(4){
+	background: url(../img/home/time.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+}
+.page-index	.content li:nth-of-type(5){
+	background: url(../img/index/detail/wifi.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+}
+.page-index	.content li:nth-of-type(6){
+	background: url(../img/index/detail/icon_home.png) no-repeat;
+	background-position: 10px center;
+	background-size: 6%;
+	border-bottom: none;
+}
+.page-index	.content li:nth-of-type(7) span{
+	margin-left:-7%;
+}
+.page-index	.content li:nth-of-type(3) span{
+	color:#00BF2D;
+}
+.page-index	.content li span{
+	padding-left: 9%;
+}	
+.page-index	.content li a{
+	color:#00BF2D;
+}
+.page-index	.content li .attention{
+	display: inline-block;
+	position: absolute;
+	right: 3%;
+	vertical-align: middle;
+	line-height: 37px;
+	text-align:right;
+		}
+.page-index	.content li .attention img{
+	width: 30%;
+} 
+.page-index	.content li .addres{
+	display: inline-block;
+	vertical-align: middle;
+	padding: 3% 3% 3% 8%;
+	line-height: 22px;
+}
+.page-index	.content .evaluationli span{
+	display: inline-block;
+	width: 30px;
+	background: url(../img/index/detail/zan.png) center no-repeat;
+	background-size: 75%;
+	height: 30px;
+	 padding-left: 0;
+}
+.page-index	.content .evaluationli{
+		padding-left: 14%;
+}
+.page-index	.content .evaluationli span.active{
+		background: url(../img/index/detail/zanactive.png) center no-repeat;
+		background-size: 75%;
+}
+.page-index	.content .evaluationli p{
+		margin-top: -7%;
+		line-height: 25px;
+}
+/*餐厅详情*/
+/*录入确定*/
+.page-entry{
+	background-color: #EEEEEE;  
+}
+.page-entry .list h4{
+	text-align: center;
+	line-height: 80px;
+	background-color: #F5F5F5;	
+}
+.page-entry .list li{
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #E5E5E5;
+	padding:0 4% ;
+	color: #A1A1A1;
+}
+.page-entry .list li span:nth-of-type(1){
+}
+.page-entry .list li span:nth-of-type(1) i{
+	padding-left: 4%;
+	color: #F17E74;
+}
+.page-entry .list li span:nth-of-type(1) i b{
+    font-weight:inherit ;
+}
+.page-entry .list li span:nth-of-type(2){
+	float: right;
+}
+.page-entry .list .total{
+	height: 50px;
+	font-size: 1.2rem;
+	text-align: right;
+	padding-right: 4%;
+	padding-top: 4%;
+}
+/*录入确定*/
+/*保存订单*/
+.page-save{
+	background: #EFEEEC;
+}
+.page-save .wrap .top h4{
+	text-align: center;
+	line-height: 30px;
+	background-color: red;
+	color: white;
+	font-size: 12px;
+	font-weight: inherit;
+}
+.page-save .wrap .content .content_img{
+	width: 20%;
+	margin: 10% auto 0;
+}
+.page-save .wrap .content .content_img img{
+	width: 100%;
+}
+.page-save .wrap .content .font{
+	text-align: center;
+}	
+.page-save .wrap .content .font h4{
+	font-size: 1.5rem;
+	line-height: 90px;
+	color: #00AF28;
+}
+.page-save .wrap .content .font p{
+	font-size:11px ;
+	text-align: left;
+	padding: 0 3%;
+	color: #B3B4AF;
+}
+.page-save .wrap .bottom .button{
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	background: #FF0000;
+	width: 90%;
+	margin: 0 auto;
+	border-radius:5px;
+	color: white;
+	font-size: 1.1rem;
+	margin-top: 10%;	
+}		
+/*保存订单*/
+/*兼容*/
+/*ipone5 */
+@media only screen (max-width:400px) {
+.page-dishesdetils .content {
+    padding: 3%;
+    background: #000000;
+    line-height: 25px;
+    height: 17rem;
+}
+.page-dishesdetils .carte{
+	height: 85px !important;
+}
+.page-dishesdetils .content p{ 
+	font-size: 43px;
+    line-height: normal;
+}
+.page-dishesdetils .swiper-wrapper{
+  	display: none;
+  }
+}
+@media only screen and (min-width: 320px) and (max-width: 320px){
+.page-dishesdetils .content { 
+}
+.page-dishesdetils .carte{
+    bottom: 2%;
+}
+.page-dishesdetils .swiper-button-prev{
+		top: 94.5% !important;
+}
+.page-dishesdetils .swiper-button-next{
+		top: 94.5% !important;
+}
+.page-dishesdetils .carte .plus{
+	height: 32px;
+}
+.page-dishesdetils .carte .less{
+	height: 32px;
+}
+}
+@media only screen and (min-width: 600px) and (max-width: 780px){
+.page-dishesdetils .swiper-button-prev{
+		top: 95% !important;
+}
+.page-dishesdetils .swiper-button-next{
+		top: 95% !important;
+} 
+.page-dishesdetils{
+	font-size: 30px;
+}
+.page-dishesdetils .content p{
+		line-height: 30px;
+}
+.page-dishesdetils .h4{
+		font-size: 35px;
+}
+.page-dishesdetils .carte{
+    	height: 83px;
+    }
+.page-dishesdetils .carte .plus{
+	width: 79px;
+	height: 79px;
+}
+.page-dishesdetils .carte .less{
+	width: 79px;
+	height: 79px;
+}
+.page-dishesdetils .carte .quantity{
+	width: 15%;
+	margin-left: 28%;
+	height: 50px;
+	margin-top: 2%;
+}
+.page-dishesdetils .carte{
+	bottom: 1%;
+}
+}
+@media only screen and (min-width: 360px) and (max-width: 375px) {
+	.home_infor .home_des {
+    display: none;
+}	
+}
+/*兼容*/
