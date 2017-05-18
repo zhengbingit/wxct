@@ -136,7 +136,7 @@ public class CustomerService {
         orders.setTable_name(tableName);
         orders.setRemark(remark);
         // 插入新订单，并获得订单 id
-        int orderId = Integer.parseInt(String.valueOf(orderDao.insertOrder(orders)));
+        int orderId = orderDao.insertOrder(orders);
         // 订单详情
         List<OrderInfo> orderInfoList = new ArrayList<OrderInfo>();
         for (FoodArray foodArray : foodArrayList) {

@@ -37,4 +37,48 @@ public class TableGroupDao {
 
         return resultTableGroupList;
     }
+
+    /**
+     * 获取所有桌台分类，不包含对应桌台的详情
+     * @return
+     */
+    public List<TableGroup> getAllTableGroups() {
+        String sql = "select " + COLUMN_TABLEGROUP + " from tablegroup";
+        return DatabaseHelper.queryEntityList(TableGroup.class, sql);
+    }
+
+    /**
+     * 根据分类id，修改分类名
+     * @param groupId
+     * @param groupName
+     * @return
+     */
+    public boolean updateTableGroup(int groupId, String groupName) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(groupId);
+        tableGroup.setName(groupName);
+        return DatabaseHelper.updateEntity(groupId, tableGroup);
+    }
+
+    /**
+     * 添加新的桌台分类
+     * @param groupName
+     * @return
+     */
+    public int addTableGroup(String groupName) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setName(groupName);
+        int num = DatabaseHelper.insertEntity(tableGroup);
+        LOGGER.debug("num = {}", num);
+        return num;
+    }
+
+    /**
+     * 删除多个桌台分类
+     * @param ids
+     * @return
+     */
+    public int deleteTableGroup(String ids) {
+        return DatabaseHelper.deleteEntitysByIds(TableGroup.class, ids);
+    }
 }

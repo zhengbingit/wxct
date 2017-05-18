@@ -81,6 +81,62 @@ public class AdminController {
      */
     @Action("post:/admin/deleteFoodGroup")
     public Data deleteFoodGroup(Param param) {
-        return null;
+        String groupIds = param.getString("groupIds");
+        LOGGER.debug("groupIds = {}", groupIds);
+        return new Data(adminService.deleteFoodGroups(groupIds));
+    }
+
+    /**
+     * 添加菜品分类
+     * @param param
+     * @return
+     */
+    @Action("post:/admin/addFoodGroup")
+    public Data addFoodGroup(Param param) {
+        String groupName = param.getString("groupName");
+        return new Data(adminService.addFoodGroup(groupName));
+    }
+
+    /**
+     * 获得所有的桌台分类
+     * @return
+     */
+    @Action("post:/admin/getAllTableGroup")
+    public Data getAllTableGroup() {
+        return new Data(adminService.getAllTableGroup());
+    }
+
+    /**
+     * 更新桌台分类
+     * @return
+     */
+    @Action("post:/admin/updateTableGroup")
+    public Data updateTableGroup(Param param) {
+        String groupName = param.getString("groupName");
+        int groupId = param.getInt("groupId");
+        LOGGER.info("groupName = {}, groupId = {}", groupName, groupId);
+        return new Data(adminService.updateTableGroup(groupId, groupName));
+    }
+
+    /**
+     * 添加桌台分类
+     * @return
+     */
+    @Action("post:/admin/addTableGroup")
+    public Data addTableGroup(Param param) {
+        String groupName = param.getString("groupName");
+        LOGGER.debug("groupName = {}", groupName);
+        return new Data(adminService.addTableGroup(groupName));
+    }
+
+    /**
+     * 删除桌台分类
+     * @return
+     */
+    @Action("post:/admin/deleteTableGroup")
+    public Data deleteTableGroup(Param param) {
+        String ids = param.getString("groupIds");
+        LOGGER.debug("ids = {}", ids);
+        return new Data(adminService.deleteTableGroup(ids));
     }
 }

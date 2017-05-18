@@ -90,7 +90,7 @@ public class OrderDao {
      * @param order
      * @return
      */
-    public Long insertOrder(Orders order) {
+    public int insertOrder(Orders order) {
         return DatabaseHelper.insertEntity(order);
     }
 

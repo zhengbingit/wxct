@@ -23,4 +23,10 @@ public class FoodGroupDaoTest {
         String newFoodGroupName = "精品小炒1";
         System.out.println(foodGroupDao.updateFoodGroup(groupId, newFoodGroupName));
     }
+
+    @Test
+    public void testAddFoodGroup() {
+        String groupName = "沙县小吃";
+        System.out.println(foodGroupDao.addFoodGroup(groupName));
+    }
 }

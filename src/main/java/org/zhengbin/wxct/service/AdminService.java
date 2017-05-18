@@ -8,11 +8,10 @@ import org.zhengbin.snowflake.framework.annotation.Service;
 import org.zhengbin.wxct.dao.FoodGroupDao;
 import org.zhengbin.wxct.dao.OrderDao;
 import org.zhengbin.wxct.dao.OrderInfoDao;
-import org.zhengbin.wxct.model.FoodGroup;
-import org.zhengbin.wxct.model.OrderInfo;
-import org.zhengbin.wxct.model.Orders;
-import org.zhengbin.wxct.model.Status;
+import org.zhengbin.wxct.dao.TableGroupDao;
+import org.zhengbin.wxct.model.*;
 
+import java.rmi.MarshalledObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,8 @@ public class AdminService {
     private OrderInfoDao orderInfoDao;
     @Inject
     private FoodGroupDao foodGroupDao;
+    @Inject
+    private TableGroupDao tableGroupDao;
 
     /**
      * 获得所有的订单
@@ -57,11 +58,9 @@ public class AdminService {
     public Status deleteOrders(String orderIds) {
         LOGGER.debug("orderIds = {}", orderIds);
         Status resultStatus = new Status();
-//        int orderInfoNum = orderInfoDao.deleteOrderInfosByOrderIds(orderIds);
         int orderNum = orderDao.deleteOrders(orderIds);
         resultStatus.setStatus(true);
         Map<String, Object> mapValue = new HashMap<String, Object>();
-//        mapValue.put("orderInfoNum", orderInfoNum);
         mapValue.put("orderNum", orderNum);
         resultStatus.setValues(mapValue);
         return resultStatus;
@@ -87,4 +86,73 @@ public class AdminService {
         return status;
     }
 
+    /**
+     * 删除菜品分类（多个）
+     * 返回删除个数
+     * @param ids
+     * @return
+     */
+    public Status deleteFoodGroups(String ids) {
+        LOGGER.debug("groupIds = {}", ids);
+        int groupNum = foodGroupDao.deleteFoodGroups(ids);
+        Status status = new Status();
+        status.setStatus(true);
+        Map<String, Object> mapValue = new HashMap<String, Object>();
+        mapValue.put("groupNum", groupNum);
+        status.setValues(mapValue);
+        return status;
+    }
+
+    /**
+     * 添加菜品分类
+     * @param groupName
+     * @return
+     */
+    public Status addFoodGroup(String groupName) {
+        Status resultStatus = new Status();
+        resultStatus.setStatus(true);
+        Map<String, Object> mapValue = new HashMap<String, Object>();
+        mapValue.put("newGroupId", foodGroupDao.addFoodGroup(groupName));
+        resultStatus.setValues(mapValue);
+        return resultStatus;
+    }
+
+    /**
+     * 获得所有桌台分类
+     */
+    public List<TableGroup> getAllTableGroup() {
+        return tableGroupDao.getAllTableGroups();
+    }
+
+    /**
+     * 修改桌台分类
+     */
+    public Status updateTableGroup(int groupId, String groupName) {
+        Status status = new Status();
+        status.setStatus(tableGroupDao.updateTableGroup(groupId, groupName));
+        return status;
+    }
+    /**
+     * 删除桌台分类
+     */
+    public Status deleteTableGroup(String ids) {
+        Status status = new Status();
+        status.setStatus(true);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("groupNum", tableGroupDao.deleteTableGroup(ids));
+        status.setValues(map);
+        return status;
+    }
+
+    /**
+     * 增加桌台分类
+     */
+    public Status addTableGroup(String groupName) {
+        Status status = new Status();
+        status.setStatus(true);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("groupNum", tableGroupDao.addTableGroup(groupName));
+        status.setValues(map);
+        return status;
+    }
 }

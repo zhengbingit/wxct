@@ -15,6 +15,16 @@ public class FoodGroupDao {
     private static final String COLUMN_TABLE = "id, name";
 
     /**
+     * 增加一个菜品分类
+     * @return
+     */
+    public int addFoodGroup(String groupName) {
+        FoodGroup foodGroup = new FoodGroup();
+        foodGroup.setName(groupName);
+        return Integer.parseInt(String.valueOf(DatabaseHelper.insertEntity(foodGroup)));
+    }
+
+    /**
      * 获取所有菜品分类
      */
     public List<FoodGroup> getAllFoodGroups() {
@@ -33,5 +43,14 @@ public class FoodGroupDao {
         foodGroup.setId(groupId);
         foodGroup.setName(groupName);
         return DatabaseHelper.updateEntity(groupId, foodGroup);
+    }
+
+    /**
+     * 删除多个菜品分类
+     * @param ids
+     * @return
+     */
+    public int deleteFoodGroups(String ids) {
+        return DatabaseHelper.deleteEntitysByIds(FoodGroup.class, ids);
     }
 }

@@ -52,7 +52,7 @@
                     var groupInfo = data[i];
                     var groupId = groupInfo.id;
                     var groupName = groupInfo.name;
-                    var html = '<tr class="even pointer">'+
+                    var html = '<tr id="tr_'+groupId+'" class="even pointer">'+
                         '<td class="a-center ">'+
                         '<input type="checkbox" class="flat" name="table_records" value="'+groupId+'">'+
                         '</td>'+
@@ -82,22 +82,20 @@
                 var groupId = $(this).val();
                 groupIds = groupIds + groupId + ',';
             });
-            var url = '../admin/deleteOrder';
-            var data = 'orderIds='+orderIds;
+            var url = '../admin/deleteFoodGroup';
+            var data = 'groupIds='+groupIds;
             var success = function (data) {
                 console.info("data = " + JSON.stringify(data));
                 if (data.status) {
-                    var idsArray = orderIds.split(',');
+                    var idsArray = groupIds.split(',');
                     for (var i = 0;i < idsArray.length;i++) {
                         $('#tr_'+ idsArray[i]).remove();
                     }
-                    alert('操作成功！'+data.values.orderNum+'条订单被删除，'+data.values.orderInfoNum+'条订单详情被删除');
-                }else {
-                    alert('操作失败！');
-                }
+                    alert('操作成功！'+data.values.groupNum+'条菜品分类被删除');
+                }else {alert('操作失败！');}
             };
             var error = function (data) {};
-            alert(orderIds);
+            console.info("groupIds = " + groupIds);
             jsonpAjaxDaAsync(url, success, error, data);
         }
 
@@ -112,10 +110,33 @@
               $('#groupName-'+groupId).html(newGroupName);
               $('#modal-group-new-name').val('');
           };
-          var error = function (data) {
-
-          };
+          var error = function (data) {};
           jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function addGroupInfo() {
+            var url = '../admin/addFoodGroup';
+            var groupName = $('#modal-add-group-name').val();
+            console.info("addGroupInfo, groupName = " + groupName);
+            var data = 'groupName='+groupName;
+            var success = function (data) {
+                var groupId = data.values.newGroupId;
+                var html = '<tr id="tr_'+groupId+'" class="even pointer">'+
+                    '<td class="a-center ">'+
+                    '<input type="checkbox" class="flat" name="table_records" value="'+groupId+'">'+
+                    '</td>'+
+                    '<td class=" ">'+groupId+'</td>'+
+                    '<td id="groupName-'+groupId+'" class=" ">'+groupName+'</td>'+
+                    '<td class=" last"><a onclick="updateGroupInfo('+groupId+');" href="#" data-toggle="modal" data-target=".bs-example-modal-lg">修改</a>'+
+                    '</td>'+
+                    '</tr>';
+                $("#datatable-responsive").append(html);
+                $('#modal-add-group-name').val('');
+                // 延时一秒后，重新加载页面
+                setTimeout(function () { window.location.reload(); }, 500);
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
         }
     </script>
   </head>
@@ -219,6 +240,12 @@
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>菜品分类信息列表</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-groupadd-modal-lg">添加</button>
+                        <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>-->
+                      </li>
+                    </ul>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content" >
@@ -297,6 +324,7 @@
 
         <!-- modals -->
         <!-- Small modal -->
+        <!-- 分类信息修改 -->
         <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -334,6 +362,35 @@
               </div>
               <div class="modal-footer">
                 <button type="button" onclick="submitUpdate()" class="btn btn-success" data-dismiss="modal">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 分类信息增加 -->
+        <div class="modal fade bs-groupadd-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">菜品分类详情</h4>
+              </div>
+              <div class="x_content">
+                <br />
+                <form id="demo-form3" data-parsley-validate class="form-horizontal form-label-left">
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-group-name">新分类名：<span class="required">*</span>
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" id="modal-add-group-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" onclick="addGroupInfo()" class="btn btn-success" data-dismiss="modal">添加</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
               </div>
             </div>
