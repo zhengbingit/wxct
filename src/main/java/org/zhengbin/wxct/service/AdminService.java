@@ -57,11 +57,11 @@ public class AdminService {
     public Status deleteOrders(String orderIds) {
         LOGGER.debug("orderIds = {}", orderIds);
         Status resultStatus = new Status();
-        int orderInfoNum = orderInfoDao.deleteOrderInfosByOrderIds(orderIds);
+//        int orderInfoNum = orderInfoDao.deleteOrderInfosByOrderIds(orderIds);
         int orderNum = orderDao.deleteOrders(orderIds);
         resultStatus.setStatus(true);
         Map<String, Object> mapValue = new HashMap<String, Object>();
-        mapValue.put("orderInfoNum", orderInfoNum);
+//        mapValue.put("orderInfoNum", orderInfoNum);
         mapValue.put("orderNum", orderNum);
         resultStatus.setValues(mapValue);
         return resultStatus;

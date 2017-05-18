@@ -229,28 +229,29 @@ $('table input').on('ifUnchecked', function () {
     countChecked();
 });
 
+
 var checkState = '';
+$(function () {
+    $('.bulk_action input').on('ifChecked', function () {
+        $(this).parent().parent().parent().addClass('selected');
+        countChecked(checkState);
+    });
+    $('.bulk_action input').on('ifUnchecked', function () {
+        checkState = '';
+        $(this).parent().parent().parent().removeClass('selected');
+        countChecked(checkState);
+    });
+    $('.bulk_action input#check-all').on('ifChecked', function () {
+        checkState = 'all';
+        countChecked(checkState);
+    });
+    $('.bulk_action input#check-all').on('ifUnchecked', function () {
+        checkState = 'none';
+        countChecked(checkState);
+    });
+});
 
-$('.bulk_action input').on('ifChecked', function () {
-    checkState = '';
-    $(this).parent().parent().parent().addClass('selected');
-    countChecked();
-});
-$('.bulk_action input').on('ifUnchecked', function () {
-    checkState = '';
-    $(this).parent().parent().parent().removeClass('selected');
-    countChecked();
-});
-$('.bulk_action input#check-all').on('ifChecked', function () {
-    checkState = 'all';
-    countChecked();
-});
-$('.bulk_action input#check-all').on('ifUnchecked', function () {
-    checkState = 'none';
-    countChecked();
-});
-
-function countChecked() {
+function countChecked(checkState) {
     if (checkState === 'all') {
         $(".bulk_action input[name='table_records']").iCheck('check');
     }

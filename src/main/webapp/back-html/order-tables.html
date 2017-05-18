@@ -64,18 +64,16 @@
                     for (var i = 0;i < idsArray.length;i++) {
                         $('#tr_'+ idsArray[i]).remove();
                     }
-                    alert('操作成功！'+data.values.orderNum+'条订单被删除，'+data.values.orderInfoNum+'条订单详情被删除');
+                    alert('操作成功！'+data.values.orderNum+'条订单被删除');
                 }else {
                     alert('操作失败！');
                 }
             };
             var error = function (data) {};
-            alert(orderIds);
             jsonpAjaxDaAsync(url, success, error, data);
         }
 
         function updateSelected(orderId) {
-            alert(1);
             console.info("orderId = "+ orderId);
             var classV = $("#tr_"+orderId).attr('class');
             console.info("classV = " + classV);

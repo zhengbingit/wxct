@@ -21,7 +21,6 @@ var ADDCAITIME = 3600000;
 // 域名
 var doman = "sms.wecaidan.cn";
 
-var USERPHONE = $.isNull($.cookie('user_info')) ? "" : $.cookie('user_info');
 var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
 // 活动
