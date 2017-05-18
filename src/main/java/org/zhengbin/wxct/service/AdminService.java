@@ -155,4 +155,12 @@ public class AdminService {
         status.setValues(map);
         return status;
     }
+
+    /**
+     * 获得所有桌台信息
+     * @return
+     */
+    public List<TableGroup> getAllTableInfo() {
+        return tableGroupDao.getAllTableGroup();
+    }
 }

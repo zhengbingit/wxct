@@ -271,8 +271,6 @@ function countChecked(checkState) {
     }
 }
 
-
-
 // Accordion
 $(document).ready(function() {
     $(".expand").on("click", function () {
@@ -2558,6 +2556,8 @@ if (typeof NProgress != 'undefined') {
 				});
 
 				$('#datatable-responsive').DataTable();
+                $('#datatable-responsive1').DataTable();
+                $('#datatable-responsive2').DataTable();
 
 				$('#datatable-scroller').DataTable({
 				  ajax: "js/datatables/json/scroller-demo.json",

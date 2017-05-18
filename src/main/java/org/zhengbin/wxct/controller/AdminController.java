@@ -139,4 +139,13 @@ public class AdminController {
         LOGGER.debug("ids = {}", ids);
         return new Data(adminService.deleteTableGroup(ids));
     }
+
+    /**
+     * 获得所有桌台信息
+     * @return
+     */
+    @Action("post:/admin/getAllTableInfo")
+    public Data getAllTableInfo() {
+        return new Data(adminService.getAllTableInfo());
+    }
 }
