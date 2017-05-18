@@ -34,7 +34,10 @@ public class FoodDaoTest {
 
     @Test
     public void testGetFoods() {
-        System.out.println(foodDao.getAllFoods());
+        List<Food> foodList = foodDao.getAllFoods();
+        for (Food food : foodList) {
+            System.out.println(food.getGroup_id()==null);
+        }
     }
 
     @Test

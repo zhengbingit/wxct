@@ -68,7 +68,7 @@ public class CustomerService {
         for (FoodGroup foodGroup : foodGroupList) {
             List<Food> tempList = new ArrayList<Food>();
             for (Food food : foodList) {
-                if (food.getGroup_id() == foodGroup.getId()) {
+                if (food.getGroup_id()!=null && food.getGroup_id()==foodGroup.getId()) {
                     tempList.add(food);
                 }
             }

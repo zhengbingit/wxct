@@ -24,12 +24,119 @@
     <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
     <!-- 封装 Ajax 请求 -->
-    <script type="text/javascript" src="../js/jquery.callback.extend.js"></script>
+    <script type="text/javascript" src="../js/constant.js"></script>
     <script type="text/javascript">
-        $(function () {
+        function jsonpAjaxDaAsync (url, successCallback, errorCallback, data) {
+            $.ajax({
+                type : 'POST',
+                url : url,
+                data : data,
+                async : false,
+                success : function(data){
+                    console.info("回调成功。。。")
+                    successCallback(data);
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown){
+                    console.info("回调失败。。。")
+                }
+            });
+        }
 
+        $(function () {
+            initOrderPage();
         });
+
+        function deleteOrderByOrderIds() {
+            var orderIds = '';
+            $(".bulk_action input[name='table_records']:checked").each(function(){
+                var orderId = $(this).val();
+                orderIds = orderIds + orderId + ',';
+            });
+            var url = '../admin/deleteOrder';
+            var data = 'orderIds='+orderIds;
+            var success = function (data) {
+                console.info("data = " + JSON.stringify(data));
+                if (data.status) {
+                    var idsArray = orderIds.split(',');
+                    for (var i = 0;i < idsArray.length;i++) {
+                        $('#tr_'+ idsArray[i]).remove();
+                    }
+                    alert('操作成功！'+data.values.orderNum+'条订单被删除，'+data.values.orderInfoNum+'条订单详情被删除');
+                }else {
+                    alert('操作失败！');
+                }
+            };
+            var error = function (data) {};
+            alert(orderIds);
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function updateSelected(orderId) {
+            alert(1);
+            console.info("orderId = "+ orderId);
+            var classV = $("#tr_"+orderId).attr('class');
+            console.info("classV = " + classV);
+            $("#tr_"+orderId).attr('class', classV+' selected');
+        }
+
+        function getOrderInfo(orderId, orderTime, totalPrice, adminName) {
+            console.info('orderId = ' + orderId + ', orderTime = ' + orderTime + ', totalPrice' + totalPrice + ', adminName' + adminName);
+            var url = '../admin/getOrderInfo';
+            var data = 'orderId=' + orderId;
+            var success = function (data) {
+                console.info('data = ' + JSON.stringify(data));
+                $(".orderinfo").remove();
+                console.info('remove');
+                $("#modal_orderinfo").append('<h5 class="orderinfo">订单号：'+ orderId +'</h5>');
+                var length = data.length;
+                for(var i = 0;i < length;i++) {
+                    var orderInfo = data[i];
+                    var html = '<p class="orderinfo" style="border-bottom: 1px dashed">'+ orderInfo.food_name +' '+ (orderInfo.price).toFixed(2) +'元 x'+orderInfo.num+' 共计 '+(orderInfo.total_price).toFixed(2)+'元</p>';
+                    $("#modal_orderinfo").append(html);
+                }
+                var otherhtml = '<p class="orderinfo" id="modal_adminname" align="right">操作员：'+adminName+'</p>'+
+                '<p class="orderinfo" id="modal_totalprice" align="right">应收：'+totalPrice.toFixed(2)+'元</p>'+
+                '<p class="orderinfo" id="modal_time" align="right">'+orderTime+'</p>';
+                $("#modal_orderinfo").append(otherhtml);
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        // 初始化页面数据
+        function initOrderPage() {
+            var url = '../admin/getOrderList';
+            var data = '';
+            var success = function (data) {
+                console.info('data = ' + JSON.stringify(data));
+                var length = data.length;
+                for (var i = 0; i < length; i++) {
+                    var order = data[i];
+                    var orderTime = new Date(order.time * 1000).toLocaleString();
+                    var orderTotalPrice = (order.real_price).toFixed(2);
+                    var adminName = order.admin_name;
+                    var html = '<tr id="tr_'+order.id+'" class="even pointer">' +
+                        '<td class="a-center ">' +
+                        '<input onclick="updateSelected(this);" id="checkbox'+ order.id +'" value="'+ order.id +'" type="checkbox" class="flat"  name="table_records">' +
+                        ' </td>' +
+                        '  <td class=" ">' + order.id + '</td>' +
+                        '   <td class=" ">' + orderTime + '</td>' +
+                        '<td class=" ">' + (order.price).toFixed(2) + '元</td>' +
+                        '<td class=" ">' + order.discount + '</td>' +
+                        '   <td class=" ">' + orderTotalPrice + '元</td>' +
+                        '<td class=" ">' + adminName + '</td>' +
+                        '<td class=" ">' + order.table_name + '</td>' +
+                        '<td class=" last"><a href="#" onclick="getOrderInfo(' + order.id + ', \'' + orderTime + '\', ' + orderTotalPrice + ', \'' + adminName + '\');" data-toggle="modal" data-target=".bs-example-modal-sm">查看</a>' +
+                        '</td></tr>';
+                    $("#datatable-responsive").append(html);
+                }
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
     </script>
 </head>
 
@@ -138,9 +245,8 @@
                                 <p class="text-muted font-13 m-b-30">
                                     可查看所有订单并进行排序、搜索和删除
                                 </p>
-
                                 <table id="datatable-responsive"
-                                       class="table table-striped jambo_table bulk_action table-bordered dt-responsive bulk_action nowrap"
+                                       class="table table-striped jambo_table table-bordered dt-responsive bulk_action nowrap"
                                        cellspacing="0" width="100%">
                                     <thead>
                                     <tr class="headings">
@@ -160,42 +266,42 @@
                                                style="color:#fff; font-weight:500;">订单项 ( <span
                                                     class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
                                             <ul class="dropdown-menu" role="menu">
-                                                <li><a href="#">删除</a></li>
+                                                <li><a href="#" onclick="deleteOrderByOrderIds();">删除</a></li>
                                             </ul>
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr class="even pointer">
-                                        <td class="a-center ">
-                                            <input type="checkbox" class="flat" name="table_records">
-                                        </td>
-                                        <td class=" ">1</td>
-                                        <td class=" ">2017-5-17 15:17:29</td>
-                                        <td class=" ">34.00元</td>
-                                        <td class=" ">1</td>
-                                        <td class=" ">34.00元</td>
-                                        <td class=" ">管理员1</td>
-                                        <td class=" ">大厅1号</td>
-                                        <td class=" last"><a href="#" data-toggle="modal"
-                                                             data-target=".bs-example-modal-lg">查看</a>
-                                        </td>
-                                    </tr>
-                                    <tr class="even pointer">
-                                        <td class="a-center ">
-                                            <input type="checkbox" class="flat" name="table_records">
-                                        </td>
-                                        <td class=" ">1</td>
-                                        <td class=" ">2017-5-17 15:17:28</td>
-                                        <td class=" ">34.00元</td>
-                                        <td class=" ">1</td>
-                                        <td class=" ">34.00元</td>
-                                        <td class=" ">管理员1</td>
-                                        <td class=" ">大厅1号</td>
-                                        <td class=" last"><a href="#" data-toggle="modal"
-                                                             data-target=".bs-example-modal-sm">查看</a>
-                                        </td>
-                                    </tr>
+                                    <!--<tr class="even pointer">-->
+                                        <!--<td class="a-center ">-->
+                                            <!--<input type="checkbox" class="flat" name="table_records">-->
+                                        <!--</td>-->
+                                        <!--<td class=" ">1</td>-->
+                                        <!--<td class=" ">2017-5-17 15:17:29</td>-->
+                                        <!--<td class=" ">34.00元</td>-->
+                                        <!--<td class=" ">1</td>-->
+                                        <!--<td class=" ">34.00元</td>-->
+                                        <!--<td class=" ">管理员1</td>-->
+                                        <!--<td class=" ">大厅1号</td>-->
+                                        <!--<td class=" last"><a href="#" data-toggle="modal"-->
+                                                             <!--data-target=".bs-example-modal-lg">查看</a>-->
+                                        <!--</td>-->
+                                    <!--</tr>-->
+                                    <!--<tr class="even pointer">-->
+                                        <!--<td class="a-center ">-->
+                                            <!--<input type="checkbox" class="flat" name="table_records">-->
+                                        <!--</td>-->
+                                        <!--<td class=" ">1</td>-->
+                                        <!--<td class=" ">2017-5-17 15:17:28</td>-->
+                                        <!--<td class=" ">34.00元</td>-->
+                                        <!--<td class=" ">1</td>-->
+                                        <!--<td class=" ">34.00元</td>-->
+                                        <!--<td class=" ">管理员1</td>-->
+                                        <!--<td class=" ">大厅1号</td>-->
+                                        <!--<td class=" last"><a href="#" data-toggle="modal"-->
+                                                             <!--data-target=".bs-example-modal-sm">查看</a>-->
+                                        <!--</td>-->
+                                    <!--</tr>-->
                                     </tbody>
                                 </table>
                             </div>
@@ -212,13 +318,13 @@
                                     </button>
                                     <h4 class="modal-title" id="myModalLabel2">订单详情</h4>
                                 </div>
-                                <div class="modal-body">
-                                    <h5>订单号：1</h5>
-                                    <p style="border-bottom: 1px dashed">宫保鸡丁 18.00元 x1 共计 18元</p>
-                                    <p style="border-bottom: 1px dashed">鱼香茄子 16.00元 x1 共计 16元</p>
-                                    <p align="right">操作员：管理员1</p>
-                                    <p align="right">应收：34.00元</p>
-                                    <p align="right">2017-5-17 17:54:24</p>
+                                <div id="modal_orderinfo" class="modal-body">
+                                    <h5 class="orderinfo">订单号：1</h5>
+                                    <p class="orderinfo" style="border-bottom: 1px dashed">宫保鸡丁 18.00元 x1 共计 18元</p>
+                                    <p class="orderinfo" style="border-bottom: 1px dashed">鱼香茄子 16.00元 x1 共计 16元</p>
+                                    <p class="orderinfo" id="modal_adminname" align="right">操作员：管理员1</p>
+                                    <p class="orderinfo" id="modal_totalprice" align="right">应收：34.00元</p>
+                                    <p class="orderinfo" id="modal_time" align="right">2017-5-17 17:54:24</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -268,6 +374,6 @@
 <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
 <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- Custom Theme Scripts -->
-<script src="../build/js/custom.min.js"></script>
+<script type="text/javascript" src="../build/js/custom.js"></script>
 </body>
 </html>

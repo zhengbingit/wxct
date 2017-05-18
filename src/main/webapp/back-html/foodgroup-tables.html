@@ -20,6 +20,104 @@
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        function jsonpAjaxDaAsync (url, successCallback, errorCallback, data) {
+            $.ajax({
+                type : 'POST',
+                url : url,
+                data : data,
+                async : false,
+                success : function(data){
+                    console.info("回调成功。。。")
+                    successCallback(data);
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown){
+                    console.info("回调失败。。。")
+                }
+            });
+        }
+        $(function () {
+            initFoodGroupPage();
+        });
+        // 初始化页面数据
+        function initFoodGroupPage() {
+            var url = '../admin/getAllFoodGroup';
+            var data = '';
+            var success = function (data) {
+                console.info('data = ' + JSON.stringify(data));
+                var length = data.length;
+                for (var i = 0; i < length; i++) {
+                    var groupInfo = data[i];
+                    var groupId = groupInfo.id;
+                    var groupName = groupInfo.name;
+                    var html = '<tr class="even pointer">'+
+                        '<td class="a-center ">'+
+                        '<input type="checkbox" class="flat" name="table_records" value="'+groupId+'">'+
+                        '</td>'+
+                        '<td class=" ">'+groupId+'</td>'+
+                        '<td id="groupName-'+groupId+'" class=" ">'+groupName+'</td>'+
+                        '<td class=" last"><a onclick="updateGroupInfo('+groupId+');" href="#" data-toggle="modal" data-target=".bs-example-modal-lg">修改</a>'+
+                        '</td>'+
+                        '</tr>';
+                    $("#datatable-responsive").append(html);
+                }
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function updateGroupInfo(groupId) {
+          var groupName = $('#groupName-'+groupId).html();
+          console.info("updateGroupInfo = " + groupId + ", " + groupName);
+          // 修改模态框的内容
+          $('#modal-group-id').attr('placeholder', groupId);
+          $('#modal-group-old-name').attr('placeholder', groupName);
+        }
+
+        function deleteFoodGroupByIds() {
+            var groupIds = '';
+            $(".bulk_action input[name='table_records']:checked").each(function(){
+                var groupId = $(this).val();
+                groupIds = groupIds + groupId + ',';
+            });
+            var url = '../admin/deleteOrder';
+            var data = 'orderIds='+orderIds;
+            var success = function (data) {
+                console.info("data = " + JSON.stringify(data));
+                if (data.status) {
+                    var idsArray = orderIds.split(',');
+                    for (var i = 0;i < idsArray.length;i++) {
+                        $('#tr_'+ idsArray[i]).remove();
+                    }
+                    alert('操作成功！'+data.values.orderNum+'条订单被删除，'+data.values.orderInfoNum+'条订单详情被删除');
+                }else {
+                    alert('操作失败！');
+                }
+            };
+            var error = function (data) {};
+            alert(orderIds);
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function submitUpdate() {
+          var newGroupName = $('#modal-group-new-name').val();
+          var groupId = $('#modal-group-id').attr('placeholder');
+          console.info("submitUpdate, newGroupName = " + newGroupName + ", groupId = " + groupId);
+          var url = '../admin/updateFoodGroup';
+          var data = 'groupId='+groupId+'&newGroupName='+newGroupName;
+          var success = function (data) {
+              alert(data.status);
+              $('#groupName-'+groupId).html(newGroupName);
+              $('#modal-group-new-name').val('');
+          };
+          var error = function (data) {
+
+          };
+          jsonpAjaxDaAsync(url, success, error, data);
+        }
+    </script>
   </head>
 
   <body class="nav-md">
@@ -110,442 +208,85 @@
               <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="clearfix"></div>
-
             <div class="row">
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Basic Tables <small>basic table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Stripped table <small>Stripped table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Hover rows <small>Try hovering over the rows</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Boardered table <small>Bordered table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-              <div class="clearfix"></div>
 
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Table design <small>Custom design</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
+                    <h2>菜品分类信息列表</h2>
                     <div class="clearfix"></div>
                   </div>
-
-                  <div class="x_content">
-
-                    <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p>
-
+                  <div class="x_content" >
+                    <p>可查看所有菜品分类并进行修改和删除操作</p>
                     <div class="table-responsive">
-                      <table class="table table-striped jambo_table bulk_action">
+                      <table id="datatable-responsive"
+                             class="table table-striped jambo_table table-bordered dt-responsive bulk_action nowrap"
+                             cellspacing="0" width="100%">
                         <thead>
                           <tr class="headings">
                             <th>
                               <input type="checkbox" id="check-all" class="flat">
                             </th>
-                            <th class="column-title">Invoice </th>
-                            <th class="column-title">Invoice Date </th>
-                            <th class="column-title">Order </th>
-                            <th class="column-title">Bill to Name </th>
-                            <th class="column-title">Status </th>
-                            <th class="column-title">Amount </th>
-                            <th class="column-title no-link last"><span class="nobr">Action</span>
+                            <th class="column-title">菜品分类号 </th>
+                            <th class="column-title">菜品分类名</th>
+                            <th class="column-title no-link last"><span class="nobr">操作</span>
+                            <th class="bulk-actions dropdown" colspan="3">
+                              <a class="antoo dropdown-toggle" data-toggle="dropdown" role="button"
+                                 style="color:#fff; font-weight:500;">订单项 ( <span
+                                      class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                              <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="deleteFoodGroupByIds();">删除</a></li>
+                              </ul>
                             </th>
-                            <th class="bulk-actions" colspan="7">
-                              <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
                             </th>
                           </tr>
                         </thead>
 
                         <tbody>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 23, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 23, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208 <i class="success fa fa-long-arrow-up"></i>
-                            </td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000038</td>
-                            <td class=" ">May 24, 2014 10:55:33 PM</td>
-                            <td class=" ">121000203 <i class="success fa fa-long-arrow-up"></i>
-                            </td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$432.26</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000037</td>
-                            <td class=" ">May 24, 2014 10:52:44 PM</td>
-                            <td class=" ">121000204</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$333.21</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 24, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 26, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208 <i class="error fa fa-long-arrow-down"></i>
-                            </td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000038</td>
-                            <td class=" ">May 26, 2014 10:55:33 PM</td>
-                            <td class=" ">121000203</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$432.26</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000037</td>
-                            <td class=" ">May 26, 2014 10:52:44 PM</td>
-                            <td class=" ">121000204</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$333.21</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 27, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 28, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
+                          <!--<tr class="even pointer">-->
+                            <!--<td class="a-center ">-->
+                              <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td class=" ">1</td>-->
+                            <!--<td class=" ">精品小炒</td>-->
+                            <!--<td class=" last"><a href="#" data-toggle="modal" data-target=".bs-example-modal-sm">修改</a>-->
+                            <!--</td>-->
+                          <!--</tr>-->
+                          <!--<tr class="odd pointer">-->
+                            <!--<td class="a-center ">-->
+                              <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td class=" ">2</td>-->
+                            <!--<td class=" ">早点系列</td>-->
+                            <!--<td class=" last"><a href="#" data-toggle="modal" data-target=".bs-example-modal-sm">修改</a>-->
+                            <!--</td>-->
+                          <!--</tr>-->
+                          <!--<tr class="even pointer">-->
+                            <!--<td class="a-center ">-->
+                              <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td class=" ">3</td>-->
+                            <!--<td class=" ">凉菜系列</td>-->
+                            <!--<td class=" last"><a href="#" data-toggle="modal" data-target=".bs-example-modal-sm">修改</a>-->
+                            <!--</td>-->
+                          <!--</tr>-->
+                          <!--<tr class="odd pointer">-->
+                            <!--<td class="a-center ">-->
+                              <!--<input type="checkbox" class="flat" name="table_records">-->
+                            <!--</td>-->
+                            <!--<td class=" ">4</td>-->
+                            <!--<td class=" ">盖饭系列</td>-->
+                            <!--<td class=" last"><a href="#" data-toggle="modal" data-target=".bs-example-modal-lg">修改</a>-->
+                            <!--</td>-->
+                          <!--</tr>-->
                         </tbody>
                       </table>
                     </div>
-							
-						
                   </div>
                 </div>
               </div>
@@ -553,6 +294,52 @@
           </div>
         </div>
         <!-- /page content -->
+
+        <!-- modals -->
+        <!-- Small modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">菜品分类详情</h4>
+              </div>
+                <div class="x_content">
+                  <br />
+                  <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-group-id">分类号：<span class="required"></span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="modal-group-id" required="required" disabled="disabled" class="form-control col-md-7 col-xs-12" placeholder="1">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-group-old-name">原分类名：<span class="required"></span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="modal-group-old-name" required="required" disabled="disabled" class="form-control col-md-7 col-xs-12" placeholder="凉菜系列">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-group-new-name">新分类名：<span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="modal-group-new-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" onclick="submitUpdate()" class="btn btn-success" data-dismiss="modal">保存</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /modals -->
 
         <!-- footer content -->
         <footer>
@@ -577,6 +364,6 @@
     <script src="../vendors/iCheck/icheck.min.js"></script>
 
     <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
+    <script type="text/javascript" src="../build/js/custom.js"></script>
   </body>
 </html>

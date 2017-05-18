@@ -21,4 +21,17 @@ public class FoodGroupDao {
         String sql = "select " + COLUMN_TABLE + " from foodgroup";
         return DatabaseHelper.queryEntityList(FoodGroup.class, sql);
     }
+
+    /**
+     * 需改菜品分类名
+     * @param groupId
+     * @param groupName
+     * @return
+     */
+    public boolean updateFoodGroup(int groupId, String groupName) {
+        FoodGroup foodGroup = new FoodGroup();
+        foodGroup.setId(groupId);
+        foodGroup.setName(groupName);
+        return DatabaseHelper.updateEntity(groupId, foodGroup);
+    }
 }

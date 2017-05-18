@@ -47,7 +47,17 @@ public class OrderDao {
     }
 
     /**
-     * 获取所有的订单
+     * 获取所有的订单（不含订单详情）
+     * @return
+     */
+    public List<Orders> getAllOrderNoInfo() {
+        String sql = "select " + COLUMN_ORDERS + " from orders";
+        List<Orders> ordersList = DatabaseHelper.queryEntityList(Orders.class, sql);
+        return ordersList;
+    }
+
+    /**
+     * 获取所有的订单（及每个订单的订单详情）
      * @return
      */
     public List<Orders> getAllOrders() {
@@ -100,6 +110,15 @@ public class OrderDao {
      * @return
      */
     public boolean deleteOrder(int id) {
-        return DatabaseHelper.deleteEntity(Orders.class, id);
+        return DatabaseHelper.deleteEntityById(Orders.class, id);
+    }
+
+    /**
+     * 删除多个订单对象
+     * @param ids
+     * @return
+     */
+    public int deleteOrders(String ids) {
+        return DatabaseHelper.deleteEntitysByIds(Orders.class, ids);
     }
 }
