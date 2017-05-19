@@ -180,11 +180,12 @@ public class QrCodeTest {
         }
     }
     public static void main(String[] args) {
+//        System.out.println(System.getProperty("user.dir"));
         // 生成二维码
-        BufferedImage qrCode = QrcodeImage("www.guoxiangxiang.com/郭香香");
-        writeImage(qrCode, "/Users/zhengbinMac/Documents/qrcode/qecode3.png");
-        String qrCodePath = "/Users/zhengbinMac/Documents/qrcode/qecode3.png";
-        System.out.println(decodeImg(qrCodePath));
+        BufferedImage qrCode = QrcodeImage("http://192.168.0.100:8080/wxct/hello?tableId=1");
+        writeImage(qrCode, "/Users/zhengbinMac/Workspaces/IDEA/qecode3.png");
+//        String qrCodePath = "/Users/zhengbinMac/Documents/qrcode/qecode3.png";
+//        System.out.println(decodeImg(qrCodePath));
         // 生成带有图片logo的二维码
 //        File qrcode = new File("/Users/zhengbinMac/Documents/qrcode/qecode3.png");
 //        File logo = new File("/Users/zhengbinMac/Documents/qrcode/WechatIMG10.jpeg");

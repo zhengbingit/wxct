@@ -10,21 +10,9 @@ public class Table {
     private String name;        // 桌台名
     private Integer num;        // 人数
     private Integer status;     // 桌台状态
+    private Integer group_id;   // 桌台分类id
     private String tableGroupName;  // 桌台分类名
     private TableGroup tableGroup; // 桌台分类
-
-    @Override
-    public String toString() {
-        return "Table{" +
-                "id=" + id +
-                ", table_id=" + table_id +
-                ", name='" + name + '\'' +
-                ", num=" + num +
-                ", status=" + status +
-                ", tableGroupName='" + tableGroupName + '\'' +
-                ", tableGroup=" + tableGroup +
-                '}';
-    }
 
     public Integer getId() {
         return id;
@@ -66,6 +54,14 @@ public class Table {
         this.status = status;
     }
 
+    public Integer getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(Integer group_id) {
+        this.group_id = group_id;
+    }
+
     public String getTableGroupName() {
         return tableGroupName;
     }
@@ -80,5 +76,19 @@ public class Table {
 
     public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "id=" + id +
+                ", table_id=" + table_id +
+                ", name='" + name + '\'' +
+                ", num=" + num +
+                ", status=" + status +
+                ", group_id=" + group_id +
+                ", tableGroupName='" + tableGroupName + '\'' +
+                ", tableGroup=" + tableGroup +
+                '}';
     }
 }

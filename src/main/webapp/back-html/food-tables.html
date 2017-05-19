@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
@@ -16,568 +16,604 @@
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
-   <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
-  </head>
+    <script type="text/javascript" src="../js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript">
+        function jsonpAjaxDaAsync (url, successCallback, errorCallback, data) {
+            $.ajax({
+                type : 'POST',
+                url : url,
+                data : data,
+                async : false,
+                success : function(data){
+                    console.info("回调成功。。。")
+                    successCallback(data);
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown){
+                    console.info("回调失败。。。")
+                }
+            });
+        }
+        $(function () {
+            initFoodInfoPage();
+        });
+        var TABLE_STATUS = new Array("点餐中","已下单","出餐中","餐上齐","已结算","空闲中");
+        function initFoodInfoPage() {
+            var url = '../admin/getAllFoodInfo';
+            var data = '';
+            var success = function (data) {
+                var dataLength = data.length;
+                for(var i = 0;i < dataLength;i++) {
+                    var group = data[i];
+                    var groupFoodList = group.foodList;
+                    var groupName = group.name;
+                    var groupId = group.id;
+                    var groupFoodListLength = groupFoodList.length;
+                    var leftPageHtml = '';
+                    if(i==0) {
+                        leftPageHtml = '<li class="active"><a href="#page'+ groupId +'" data-toggle="tab">'+ groupName +'</a></li>';
+                    }else {
+                        leftPageHtml = '<li><a href="#page'+ groupId +'" data-toggle="tab">'+ groupName +'</a></li>';
+                    }
+                    // 添加桌台模态框中的桌台分类
+                    var modalgroupidHtml = '<option value="'+groupId+'">'+groupName+'</option>';
+                    $("#modal-add-food-groupid").append(modalgroupidHtml);// 添加-模态框
+                    $("#modal-update-food-groupid").append(modalgroupidHtml);// 更新-模态框
+                    // 左侧标签
+                    $("#groupPage").append(leftPageHtml);
+                    // 表格头部信息
+                    var headerHtml = '<div class="tab-pane active" id="page'+groupId+'">'+
+                        '<table class="table table-striped">'+
+                        '<thead><tr><th>编号</th><th>菜品名</th>'+
+                        '<th>售卖量</th><th>价格</th><th>详情</th><th>分组</th><th>是否估清</th><th>单位</th><th>搜索拼音</th><th>操作</th>'+
+                        '</tr></thead><tbody id="tbody'+groupId+'">';
+                    $("#pageCentent").append(headerHtml);
+                    for(var j = 0;j < groupFoodListLength;j++) {
+                        var food = groupFoodList[j];
+                        var id = food.id;
+                        var name = food.name;
+                        var sellNum = food.sell_num;
+                        var price = food.price;
+                        var detail = food.detail;
+                        if (detail == null) {
+                            detail = '空';
+                        }
+                        var groupId = food.group_id;
+                        var groupName = food.group_name;
+                        var offStock = food.off_stock;
+                        if (offStock == '0') {
+                            offStock = '否';
+                        }else {
+                            offStock = '是';
+                        }
+                        var unit = food.unit;
+                        var spell = food.spell;
+                        var html = '<tr><th scope="row" id="food-id-'+id+'">'+id+'</th>'+
+                            '<td id="food-name-'+id+'">'+name+'</td>'+
+                            '<td id="food-sellnum-'+id+'">'+ sellNum +'</td>'+
+                            '<td id="food-price-'+id+'">'+ price +'</td>'+
+                            '<td id="food-detail-'+id+'">'+ detail +'</td>'+
+                            '<td id="food-groupName-'+id+'">'+ groupName +'<input type="hidden" id="food-groupid-'+id+'" value="'+groupId+'"></td>'+
+                            '<td id="food-offStock-'+id+'">'+ offStock +'</td>'+
+                            '<td id="food-unit-'+id+'">'+ unit +'</td>'+
+                            '<td id="food-spell-'+id+'">'+ spell +'</td>'+
+                            '<td><div class="btn-group btn-sm">'+
+                            '    <button type="button" class="btn btn-danger btn-sm">操作</button>'+
+                            '   <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="false">'+
+                            ' <span class="caret"></span>'+
+                            ' <span class="sr-only">Toggle Dropdown</span></button>'+
+                            '<ul class="dropdown-menu" role="menu">'+
+                            '    <li><a href="#" onclick="updateTableInfo('+id+')" data-toggle="modal" data-target=".bs-groupupdate-modal-lg">修改</a></li>'+
+                            '<li><a href="#" onclick="deleteTableInfo('+id+')">删除</a></li></ul></div></td></tr>';
+                        $("#tbody"+groupId).append(html);
+                    }
+                    var footHtml = '</tbody></table></div>';
+                    $("#pageCentent").append(footHtml);
+                }
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
 
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
+        function addTableInfo() {
+            var tableId = $('#modal-add-table-tableid').val();
+            var tableName = $('#modal-add-table-name').val();
+            var tableNum = $('#modal-add-table-num').val();
+            var groupId = $('#modal-add-table-groupid').val();
+            var url = '../admin/addTableInfo';
+            var data = "tableId="+tableId+"&tableName="+tableName+"&tableNum="+tableNum+"&groupId="+groupId;
+            console.info("data = " + data);
+            var success = function (data) {
+                var status = data.status;
+                setTimeout(function () { window.location.reload(); }, 500);
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function updateTableInfo(id) {
+            var name = $("#food-name-"+id).html();
+            var sellnum = $("#food-sellnum-"+id).html();
+            var price = $("#food-price-"+id).html();
+            var detail = $("#food-detail-"+id).html();
+            var offstock = $("#food-offStock-"+id).html();
+            var unit = $("#food-unit-"+id).html();
+            var spell = $("#food-spell-"+id).html();
+            var groupid = $("#food-groupid-"+id).val();
+            $('#modal-update-food-id').val(id);
+            $('#modal-update-food-name').val(name);
+            $('#modal-update-food-sellnum').val(sellnum);
+            $('#modal-update-food-price').val(price);
+            $('#modal-update-food-detail').val(detail);
+            $('#modal-update-food-offstock').val(offstock);
+            $('#modal-update-food-unit').val(unit);
+            $('#modal-update-food-spell').val(spell);
+            $('#modal-update-food-groupid').val(groupid);
+            console.info(id + ", " + name + ", " + sellnum + ", " + price);
+        }
+
+        function submitUpdate() {
+            var id = $('#modal-add-table-id').val();
+            var num = $('#modal-update-table-num').val();
+            var groupId = $('#modal-update-table-groupid').val();
+            var url = '../admin/updateTableInfo';
+            var data = 'id='+id+'&groupId='+groupId+'&num='+num;
+            console.info("data = "+data);
+            var success = function (data) {
+                setTimeout(function () { window.location.reload(); }, 500);
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+
+        function deleteTableInfo(id) {
+            var url = '../admin/deleteTableInfo';
+            var data = 'id='+id;
+            var success = function (data) {
+                setTimeout(function () { window.location.reload(); }, 500);
+            };
+            var error = function (data) {};
+            jsonpAjaxDaAsync(url, success, error, data);
+        }
+    </script>
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="wxct-backindex.html" class="site_title">
-                <span>微信餐厅管理平台</span></a>
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="wxct-backindex.html" class="site_title">
+                        <span>微信餐厅管理平台</span></a>
+                </div>
+                <div class="clearfix"></div>
+                <br/>
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li><a><i class="fa fa-desktop"></i> 订单管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="order-tables.html">订单列表</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 菜品管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="food-tables.html">菜品信息管理</a></li>
+                                    <li><a href="foodgroup-tables.html">菜品分类信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 桌台管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="table-tables.html">桌台信息管理</a></li>
+                                    <li><a href="tablegroup-tables.html">桌台分类信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-edit"></i> 服务员管理 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="admin-tables.html">服务员信息管理</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-table"></i> 其它 <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="other-tables.html">其它信息</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /sidebar menu -->
             </div>
-            <div class="clearfix"></div>
-            <br />
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-              <div class="menu_section">
-                <ul class="nav side-menu">
-                  <li><a><i class="fa fa-desktop"></i> 订单管理 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="order-tables.html">订单列表</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-edit"></i> 菜品管理 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="food-tables.html">菜品信息管理</a></li>
-                      <li><a href="foodgroup-tables.html">菜品分类信息管理</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-edit"></i> 桌台管理 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="table-tables.html">桌台信息管理</a></li>
-                      <li><a href="tablegroup-tables.html">桌台分类信息管理</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-edit"></i> 服务员管理 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="admin-tables.html">服务员信息管理</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> 其它 <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="other-tables.html">其它信息</a></li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- /sidebar menu -->
-          </div>
         </div>
 
         <!-- top navigation -->
         <div class="top_nav">
-          <div class="nav_menu">
-            <nav>
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
 
-              <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    管理员
-                    <span class=" fa fa-angle-down"></span>
-                  </a>
-                  <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li>
-                      <a href="javascript:;">
-                        <span>设置</span>
-                      </a>
-                    </li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> 注销</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-          </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                               aria-expanded="false">
+                                管理员
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li>
+                                    <a href="javascript:;">
+                                        <span>设置</span>
+                                    </a>
+                                </li>
+                                <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> 注销</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
         <!-- /top navigation -->
 
         <!-- page content -->
         <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              <div class="title_left">
-                <h3>菜品信息 <small>可对所有菜品信息进行管理</small></h3>
-              </div>
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="clearfix"></div>
-
-            <div class="row">
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Basic Tables <small>basic table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Stripped table <small>Stripped table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Hover rows <small>Try hovering over the rows</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Boardered table <small>Bordered table subtitle</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Username</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Larry</td>
-                          <td>the Bird</td>
-                          <td>@twitter</td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                  </div>
-                </div>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Table design <small>Custom design</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-
-                  <div class="x_content">
-
-                    <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p>
-
-                    <div class="table-responsive">
-                      <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                          <tr class="headings">
-                            <th>
-                              <input type="checkbox" id="check-all" class="flat">
-                            </th>
-                            <th class="column-title">Invoice </th>
-                            <th class="column-title">Invoice Date </th>
-                            <th class="column-title">Order </th>
-                            <th class="column-title">Bill to Name </th>
-                            <th class="column-title">Status </th>
-                            <th class="column-title">Amount </th>
-                            <th class="column-title no-link last"><span class="nobr">Action</span>
-                            </th>
-                            <th class="bulk-actions" colspan="7">
-                              <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 23, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 23, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208 <i class="success fa fa-long-arrow-up"></i>
-                            </td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000038</td>
-                            <td class=" ">May 24, 2014 10:55:33 PM</td>
-                            <td class=" ">121000203 <i class="success fa fa-long-arrow-up"></i>
-                            </td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$432.26</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000037</td>
-                            <td class=" ">May 24, 2014 10:52:44 PM</td>
-                            <td class=" ">121000204</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$333.21</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 24, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 26, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208 <i class="error fa fa-long-arrow-down"></i>
-                            </td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000038</td>
-                            <td class=" ">May 26, 2014 10:55:33 PM</td>
-                            <td class=" ">121000203</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$432.26</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000037</td>
-                            <td class=" ">May 26, 2014 10:52:44 PM</td>
-                            <td class=" ">121000204</td>
-                            <td class=" ">Mike Smith</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$333.21</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-
-                          <tr class="even pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000040</td>
-                            <td class=" ">May 27, 2014 11:47:56 PM </td>
-                            <td class=" ">121000210</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$7.45</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                          <tr class="odd pointer">
-                            <td class="a-center ">
-                              <input type="checkbox" class="flat" name="table_records">
-                            </td>
-                            <td class=" ">121000039</td>
-                            <td class=" ">May 28, 2014 11:30:12 PM</td>
-                            <td class=" ">121000208</td>
-                            <td class=" ">John Blank L</td>
-                            <td class=" ">Paid</td>
-                            <td class="a-right a-right ">$741.20</td>
-                            <td class=" last"><a href="#">View</a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>菜品信息
+                            <small>可对所有菜品信息进行管理</small>
+                        </h3>
                     </div>
-							
-						
-                  </div>
                 </div>
-              </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>菜品信息列表</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target=".bs-groupadd-modal-lg">添加
+                                        </button>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="col-xs-1">
+                                    <!-- required for floating -->
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs tabs-left" id="groupPage">
+                                        <!--<li class="active"><a href="#home" data-toggle="tab">精品小炒</a></li>-->
+                                        <!--<li><a href="#profile" data-toggle="tab">早点系列</a></li>-->
+                                        <!--<li><a href="#profile" data-toggle="tab">凉菜系列</a></li>-->
+                                    </ul>
+                                </div>
+
+                                <div class="col-xs-11">
+                                    <!-- Tab panes -->
+                                    <div class="tab-content" id="pageCentent">
+                                        <!--<div class="tab-pane active" id="home">-->
+                                            <!--<table class="table table-striped">-->
+                                                <!--<thead>-->
+                                                <!--<tr>-->
+                                                    <!--<th>编号</th>-->
+                                                    <!--<th>菜品名</th>-->
+                                                    <!--<th>售卖量</th>-->
+                                                    <!--<th>价格</th>-->
+                                                    <!--<th>详情</th>-->
+                                                    <!--<th>分组</th>-->
+                                                    <!--<th>是否估清</th>-->
+                                                    <!--<th>单位</th>-->
+                                                    <!--<th>搜索拼音</th>-->
+                                                    <!--<th>操作</th>-->
+                                                <!--</tr>-->
+                                                <!--</thead>-->
+                                                <!--<tbody>-->
+                                                <!--<tr>-->
+                                                    <!--<th scope="row">1</th>-->
+                                                    <!--<td>宫保鸡丁</td>-->
+                                                    <!--<td>9</td>-->
+                                                    <!--<td>16</td>-->
+                                                    <!--<td>精选肌肉，香辣口味</td>-->
+                                                    <!--<td>精品小炒</td>-->
+                                                    <!--<td>否</td>-->
+                                                    <!--<td>/份</td>-->
+                                                    <!--<td>gbjd</td>-->
+                                                    <!--<td>-->
+                                                        <!--<div class="btn-group btn-sm">-->
+                                                            <!--<button type="button" class="btn btn-danger btn-sm">操作-->
+                                                            <!--</button>-->
+                                                            <!--<button type="button"-->
+                                                                    <!--class="btn btn-danger dropdown-toggle btn-sm"-->
+                                                                    <!--data-toggle="dropdown" aria-expanded="false">-->
+                                                                <!--<span class="caret"></span>-->
+                                                                <!--<span class="sr-only">Toggle Dropdown</span>-->
+                                                            <!--</button>-->
+                                                            <!--<ul class="dropdown-menu" role="menu">-->
+                                                                <!--<li><a href="#">修改</a>-->
+                                                                <!--</li>-->
+                                                                <!--<li><a href="#">删除</a>-->
+                                                                <!--</li>-->
+                                                            <!--</ul>-->
+                                                        <!--</div>-->
+                                                    <!--</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                    <!--<th scope="row">2</th>-->
+                                                    <!--<td>鱼香茄子</td>-->
+                                                    <!--<td>9</td>-->
+                                                    <!--<td>16</td>-->
+                                                    <!--<td>精选肌肉，香辣口味</td>-->
+                                                    <!--<td>精品小炒</td>-->
+                                                    <!--<td>否</td>-->
+                                                    <!--<td>/份</td>-->
+                                                    <!--<td>yxqz</td>-->
+                                                    <!--<td>-->
+                                                        <!--<div class="btn-group btn-sm">-->
+                                                            <!--<button type="button" class="btn btn-danger btn-sm">操作-->
+                                                            <!--</button>-->
+                                                            <!--<button type="button"-->
+                                                                    <!--class="btn btn-danger dropdown-toggle btn-sm"-->
+                                                                    <!--data-toggle="dropdown" aria-expanded="false">-->
+                                                                <!--<span class="caret"></span>-->
+                                                                <!--<span class="sr-only">Toggle Dropdown</span>-->
+                                                            <!--</button>-->
+                                                            <!--<ul class="dropdown-menu" role="menu">-->
+                                                                <!--<li><a href="#" onclick="">修改</a>-->
+                                                                <!--</li>-->
+                                                                <!--<li><a href="#" onclick="">删除</a>-->
+                                                                <!--</li>-->
+                                                            <!--</ul>-->
+                                                        <!--</div>-->
+                                                    <!--</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                    <!--<th scope="row">3</th>-->
+                                                    <!--<td>油饼</td>-->
+                                                    <!--<td>9</td>-->
+                                                    <!--<td>16</td>-->
+                                                    <!--<td>精选肌肉，香辣口味</td>-->
+                                                    <!--<td>精品小炒</td>-->
+                                                    <!--<td>否</td>-->
+                                                    <!--<td>/份</td>-->
+                                                    <!--<td>yb</td>-->
+                                                    <!--<td>-->
+                                                        <!--<div class="btn-group btn-sm">-->
+                                                            <!--<button type="button" class="btn btn-danger btn-sm">操作-->
+                                                            <!--</button>-->
+                                                            <!--<button type="button"-->
+                                                                    <!--class="btn btn-danger dropdown-toggle btn-sm"-->
+                                                                    <!--data-toggle="dropdown" aria-expanded="false">-->
+                                                                <!--<span class="caret"></span>-->
+                                                                <!--<span class="sr-only">Toggle Dropdown</span>-->
+                                                            <!--</button>-->
+                                                            <!--<ul class="dropdown-menu" role="menu">-->
+                                                                <!--<li><a href="#">修改</a>-->
+                                                                <!--</li>-->
+                                                                <!--<li><a href="#">删除</a>-->
+                                                                <!--</li>-->
+                                                            <!--</ul>-->
+                                                        <!--</div>-->
+                                                    <!--</td>-->
+                                                <!--</tr>-->
+                                                <!--</tbody>-->
+                                            <!--</table>-->
+                                        <!--</div>-->
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
         <!-- /page content -->
 
+        <!-- modals -->
+        <div class="modal fade bs-groupadd-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">添加菜品</h4>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="demo-form-add" data-parsley-validate class="form-horizontal form-label-left">
+
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-tableid">菜品名：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-tableid" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-sellnum">售卖量：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-sellnum" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-price">价格：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-price" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-detail">详情：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-detail" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-offstock">是否估清：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-offstock" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-unit">单位：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-unit" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-spell">拼音首字母：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-add-food-spell" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-groupid">菜品分类：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select id="modal-add-food-groupid" class="form-control" required="">
+                                        <option value="">选择分类..</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="addTableInfo()" class="btn btn-success" data-dismiss="modal">添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-groupupdate-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel-update">修改菜品</h4>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <form id="demo-form-update" data-parsley-validate class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-id">编号：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-id" name="last-name" disabled="disabled" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-name">菜品名：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-sellnum">售卖量：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-sellnum" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-price">价格：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-price" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-detail">详情：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-detail" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-offstock">是否估清：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-offstock" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-unit">单位：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-unit" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-spell">拼音首字母：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input type="text" id="modal-update-food-spell" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-update-food-groupid">菜品分类：<span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select id="modal-update-food-groupid" class="form-control" required="">
+                                        <option value="">选择分类..</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="submitUpdate()" class="btn btn-success" data-dismiss="modal">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /modals  -->
+
         <!-- footer content -->
         <footer>
-          <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div>
-          <div class="clearfix"></div>
+            <div class="pull-right">
+                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
         </footer>
         <!-- /footer content -->
-      </div>
     </div>
+</div>
 
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
+<!-- jQuery -->
+<script src="../vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="../vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="../vendors/nprogress/nprogress.js"></script>
+<!-- iCheck -->
+<script src="../vendors/iCheck/icheck.min.js"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
-  </body>
+<!-- Custom Theme Scripts -->
+<script src="../build/js/custom.min.js"></script>
+</body>
 </html>

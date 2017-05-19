@@ -3,8 +3,8 @@ package org.zhengbin.wxct.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zhengbin.snowflake.framework.annotation.Repository;
+import org.zhengbin.snowflake.framework.bean.Data;
 import org.zhengbin.snowflake.framework.helper.DatabaseHelper;
-import org.zhengbin.wxct.model.Food;
 import org.zhengbin.wxct.model.Table;
 import org.zhengbin.wxct.model.TableGroup;
 
@@ -79,5 +79,34 @@ public class TableDao {
             resultList.add(tempTable);
         }
         return resultList;
+    }
+
+    /**
+     * 添加桌台信息
+     * @return
+     */
+    public boolean addTable(Table table) {
+        String sql = "insert into `table`(group_id, num, name, table_id, status) VALUES (?, ?, ?, ?, ?)";
+        return DatabaseHelper.executeUpdate(sql, table.getGroup_id(), table.getNum(), table.getName(), table.getTable_id(), table.getStatus()) == 1;
+    }
+
+    /**
+     * 修改桌台详情
+     * @param table
+     * @return
+     */
+    public boolean updateTableInfo(Table table) {
+        String sql = "update `table` set group_id=?, num=? where id=?";
+        return DatabaseHelper.executeUpdate(sql, table.getGroup_id(), table.getNum(), table.getId()) == 1;
+    }
+
+    /**
+     * 删除桌台详情
+     * @param id
+     * @return
+     */
+    public boolean deleteTableInfo(int id) {
+        String sql = "delete from `table` where id=?";
+        return DatabaseHelper.executeUpdate(sql, id) == 1;
     }
 }

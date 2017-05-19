@@ -18,7 +18,7 @@ import org.zhengbin.wxct.service.FoodService;
 import java.util.List;
 
 /**
- * 消费者端
+ * 消费者端：微信平台
  * Created by zhengbinMac on 2017/4/25.
  */
 @Controller
@@ -50,8 +50,9 @@ public class CustomerMenuController {
     @Action("post:/cancelOrder")
     public Data cancelOrder(Param param) {
         int orderId = param.getInt("orderId");
-        LOGGER.debug("取消订单，orderId = {}", orderId);
-        return null;
+        String tableName = param.getString("tableName");
+        LOGGER.debug("取消订单，orderId = {}, tableName={}", orderId, tableName);
+        return new Data(customerService.cancelOrder(orderId, tableName));
     }
 
     /**

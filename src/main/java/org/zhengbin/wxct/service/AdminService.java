@@ -1,17 +1,18 @@
 package org.zhengbin.wxct.service;
 
-import org.apache.commons.collections.map.HashedMap;
+import javafx.scene.control.Tab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.annotation.Service;
-import org.zhengbin.wxct.dao.FoodGroupDao;
-import org.zhengbin.wxct.dao.OrderDao;
-import org.zhengbin.wxct.dao.OrderInfoDao;
-import org.zhengbin.wxct.dao.TableGroupDao;
+import org.zhengbin.snowflake.framework.util.FileUtil;
+import org.zhengbin.wxct.dao.*;
 import org.zhengbin.wxct.model.*;
 
-import java.rmi.MarshalledObject;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +30,15 @@ public class AdminService {
     @Inject
     private FoodGroupDao foodGroupDao;
     @Inject
+    private FoodDao foodDao;
+    @Inject
     private TableGroupDao tableGroupDao;
+    @Inject
+    private TableDao tableDao;
 
     /**
      * 获得所有的订单
+     *
      * @return
      */
     public List<Orders> getOrders() {
@@ -41,6 +47,7 @@ public class AdminService {
 
     /**
      * 根据订单 Id 获得对应的订单详情
+     *
      * @param orderId
      * @return
      */
@@ -52,6 +59,7 @@ public class AdminService {
      * 删除多个订单
      * 1. 删订单详情
      * 2. 删订单
+     *
      * @param orderIds
      * @return
      */
@@ -68,6 +76,7 @@ public class AdminService {
 
     /**
      * 获得所有的菜品分类信息
+     *
      * @return
      */
     public List<FoodGroup> getAllFoodGroup() {
@@ -76,6 +85,7 @@ public class AdminService {
 
     /**
      * 修改菜品分类名
+     *
      * @param groupId
      * @param groupName
      * @return
@@ -89,6 +99,7 @@ public class AdminService {
     /**
      * 删除菜品分类（多个）
      * 返回删除个数
+     *
      * @param ids
      * @return
      */
@@ -105,6 +116,7 @@ public class AdminService {
 
     /**
      * 添加菜品分类
+     *
      * @param groupName
      * @return
      */
@@ -132,6 +144,7 @@ public class AdminService {
         status.setStatus(tableGroupDao.updateTableGroup(groupId, groupName));
         return status;
     }
+
     /**
      * 删除桌台分类
      */
@@ -158,9 +171,50 @@ public class AdminService {
 
     /**
      * 获得所有桌台信息
+     *
      * @return
      */
     public List<TableGroup> getAllTableInfo() {
         return tableGroupDao.getAllTableGroup();
+    }
+
+    /**
+     * 添加桌台信息
+     *
+     * @param table
+     * @return
+     */
+    public boolean addTableInfo(Table table) {
+        return tableDao.addTable(table);
+    }
+
+    /**
+     * 修改桌台信息（桌台人数、桌台分类）
+     *
+     * @return
+     */
+    public Status updateTableInfo(Table table) {
+        Status status = new Status();
+        status.setStatus(tableDao.updateTableInfo(table));
+        return status;
+    }
+
+    /**
+     * 删除桌台信息
+     * @param id
+     * @return
+     */
+    public Status deleteTableInfo(int id) {
+        Status status = new Status();
+        status.setStatus(tableDao.deleteTableInfo(id));
+        return status;
+    }
+
+    /**
+     * 获得所有菜品信息，按菜品的分类进行分组
+     * @return
+     */
+    public List<FoodGroup> getAllFoodInfo() {
+        return foodDao.getAllFoodInfo();
     }
 }

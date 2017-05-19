@@ -41,6 +41,19 @@ public class CustomerService {
     private FoodGroupDao foodGroupDao;
 
     /**
+     * 取消订单
+     * @return
+     */
+    public Status cancelOrder(int OrderId, String tableName) {
+        Map<String, Object> pushMap = new HashMap<String, Object>();
+        pushMap.put("title", "取消订单申请！");
+        pushMap.put("content", tableName+"，申请取消订单");
+        Status resultStatus = new Status();
+        resultStatus.setStatus(GeTuiPushUtil.pushMsg(pushMap));
+        return resultStatus;
+    }
+
+    /**
      * 一键催单
      * @return
      */

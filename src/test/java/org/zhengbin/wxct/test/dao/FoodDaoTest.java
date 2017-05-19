@@ -1,5 +1,6 @@
 package org.zhengbin.wxct.test.dao;
 
+import org.zhengbin.snowflake.framework.util.JsonUtil;
 import org.zhengbin.wxct.dao.FoodDao;
 import org.zhengbin.wxct.model.Food;
 import org.junit.Test;
@@ -60,5 +61,10 @@ public class FoodDaoTest {
         int id = 1;
         int num = 1000;
         LOGGER.debug("updateFoodRestNum : {}", foodDao.updateFoodRestNum(num, id));
+    }
+
+    @Test
+    public void testGetAllFoodInfo() {
+        LOGGER.debug("allFoodInfo = {}", JsonUtil.toJson(foodDao.getAllFoodInfo()));
     }
 }

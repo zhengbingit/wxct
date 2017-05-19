@@ -52,6 +52,7 @@
         };
 
         var tableName;
+        var orderId;
         // 打开页面后开始执行
         $(function () {
             console.info("订单结算页面加载。。。");
@@ -63,7 +64,8 @@
                 tableName = data.table_name;
                 $("#tableNoTop").html(tableName);
                 // 订单 id
-                $("#orderNum").html(data.id);
+                orderId = data.id;
+                $("#orderNum").html(orderId);
                 $("#orderRemark").html(data.remark);
                 var time = data.time;
                 $("#orderTime").html(new Date(time*1000).toLocaleString());
@@ -72,7 +74,7 @@
                 var orderInfos = data.order_infos;
                 for (var i = 0; i < orderInfos.length; i++) {
                     var order = orderInfos[i];
-                    var realprice = '', speprice = '', dsnHtml = '';
+                    var realprice = '', speprice = '';
                     realprice = '<i  id="price' + order.food_id + '">' + (order.total_price) + '</i>';
                     speprice = '<i style="" id="special' + order.foodId + '">' + (order.price).toFixed(2) + '</i> ';
                     var dsnHtml = '';
@@ -80,7 +82,6 @@
                     if (orderRemark.length != 0) {
                         dsnHtml = '	<input class="beizhu_return" id="beizhu' + order.food_id + '" type="text" readonly="readonly"  style="display: inline-block;" value="' + orderRemark + '">';
                     }
-
                     var liHtml = '';
                     if (orderRemark.length == 0) {
                         liHtml = '<li class="clearfix">' + '<div class="orderTi_left" style="margin-top: 0rem;">';
@@ -95,10 +96,9 @@
                 loaded();
                 myScroll.refresh();
                 // 显示订单详情
-                afterInit()
+                afterInit();
             };
-            var error = function () {
-            };
+            var error = function () {};
             var tableId = localData.get('tableId');
             $.jsonpAjaxDaAsync(url, success, error, "tableId=" + tableId);
             // 从服务端获得信息，初始化 订单详情 end
@@ -119,12 +119,14 @@
 
         // 取消订单
         function cancelOrder() {
-            var success = function () {
-                
+            console.info("取消订单。。。");
+            var success = function (data) {
+                alert("已申请取消")
             };
-            var url = '';
-            var data = '';
-
+            var error = function (data) {};
+            var url = '../cancelOrder';
+            var data = 'tableName='+tableName+'&orderId='+orderId;
+            $.jsonpAjaxDaAsync(url, success, error, data);
         }
         
         //加载后
@@ -182,7 +184,7 @@
         <div class="payMent">
             <span>付款金额：</span>
             <i>￥</i>
-            <i id="endPrice">36.00</i>
+            <i id="endPrice">0.00</i>
         </div>
         <div class="payMent" style="font-size: 16px;">
             <span>下单时间：</span>
@@ -208,7 +210,7 @@
 <footer class="order_foot">
     <div class="xia" style="height: 5.6rem">
         <div id="urgeOrder" style="margin-top: 0.8rem;background-color: #00AF28" onclick="urgeOrder()">一键催促</div>
-        <div id="cancelOrder" style="margin-top: 0.4rem;">取消订单</div>
+        <div id="cancelOrder" style="margin-top: 0.4rem;" onclick="cancelOrder()">取消订单</div>
     </div>
     <!--<div class="xia" style="">-->
         <!---->

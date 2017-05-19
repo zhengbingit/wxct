@@ -1,5 +1,6 @@
 package org.zhengbin.wxct.dao;
 
+import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.annotation.Repository;
 import org.zhengbin.wxct.model.Food;
 import org.slf4j.Logger;
@@ -17,11 +18,14 @@ import java.util.Map;
  */
 @Repository
 public class FoodDao {
+    @Inject
+    private FoodGroupDao foodGroupDao;
+
     private static final String COLUMN_TABLE = "id, `name`, rest_num, sell_num, price, detail," +
                                                 " group_id, nature_id, big_img, small_img," +
                                                 " group_name, nature_name, unit, off_stock," +
                                                 " trade_time, spell";
-
+    private static final String COLUMN_TABLE_FOODGROUP = "id, name";
     /**
      * 链表查询，获取菜品详情
      */
@@ -78,5 +82,28 @@ public class FoodDao {
         String sql = "UPDATE food SET rest_num = ? where id = ?";
         Object[] params = {num, id};
         return DatabaseHelper.executeUpdate(sql, params) == 1;
+    }
+
+    /**
+     * 获取所有菜品详情-管理员端调用
+     * @return
+     */
+    public List<FoodGroup> getAllFoodInfo() {
+        // 获取所有菜品信息
+        List<FoodGroup> allFoodGroupByFoodGroupList = new ArrayList<FoodGroup>();
+        String sql = "select " + COLUMN_TABLE_FOODGROUP + " from foodgroup";
+        List<FoodGroup> foodGroupList = DatabaseHelper.queryEntityList(FoodGroup.class, sql);
+        List<Food> foodList = getAllFoods();
+        for (FoodGroup foodGroup : foodGroupList) {
+            List<Food> tempList = new ArrayList<Food>();
+            for (Food food : foodList) {
+                if (food.getGroup_id()!=null && food.getGroup_id()==foodGroup.getId()) {
+                    tempList.add(food);
+                }
+            }
+            foodGroup.setFoodList(tempList);
+            allFoodGroupByFoodGroupList.add(foodGroup);
+        }
+        return allFoodGroupByFoodGroupList;
     }
 }

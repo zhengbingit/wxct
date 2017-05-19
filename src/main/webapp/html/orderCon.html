@@ -228,6 +228,8 @@
                     var data = "tableId="+tableId+"&foodArray="+localData.get('foodArray')+"&remark="+remark;
                     var successCallback = function (data) {
                         console.info("successCallback data = " + JSON.stringify(data));
+                        // 跳转至我的订单
+                        window.location="myOrder.html";
                     };
                     var errorCallback = function (data) {
                         console.info("errorCallback data = " + JSON.stringify(data));
@@ -236,13 +238,6 @@
                     return false;
                 });
             });
-            var user_info = $.cookie('user_info'); // 读取 cookie
-            if (user_info != undefined && user_info != null && user_info != "null") {
-                $("#user_info").show();
-                $("#name").html(user_info.name);
-                $("#phone").html(user_info);
-                $("#address").html(user_info.address);
-            }
         });
 
         //加载后

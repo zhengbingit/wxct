@@ -39,4 +39,38 @@ public class TableDaoTest {
         int tableId = 1;
         LOGGER.debug("tableInfo = {}", tableDao.getTableInfo(tableId));
     }
+
+    @Test
+    public void testAddTableInfo() {
+        int tableId = 10;
+        String tableName = "10";
+        int groupId = 1;
+        int num = 3;
+        int status = TableStatusConstant.KONG_XIAN_ZHONG;
+        Table table = new Table();
+        table.setTable_id(tableId);
+        table.setName(tableName);
+        table.setGroup_id(groupId);
+        table.setNum(num);
+        table.setStatus(status);
+        LOGGER.debug("insert = {}",tableDao.addTable(table));
+    }
+
+    @Test
+    public void testUpdateTableInfo() {
+        int id = 12;
+        int num = 3;
+        int groupId = 1;
+        Table table = new Table();
+        table.setId(id);
+        table.setNum(num);
+        table.setGroup_id(groupId);
+        System.out.println(tableDao.updateTableInfo(table));
+    }
+
+    @Test
+    public void testDeleteTableInfo() {
+        int id = 13;
+        System.out.println(tableDao.deleteTableInfo(id));
+    }
 }

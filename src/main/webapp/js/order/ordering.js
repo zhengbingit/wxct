@@ -406,8 +406,10 @@ function initDishesClass() {
         $("#dishUL").html("");
         $("#diffCai").html("");
         if (length > 0) {
+            console.info(11111);
             // 循环的所有菜品分类
             for (var j = 0; j < length; j++) {
+                console.info(22222);
                 // 某个分类的所有信息
                 var objClass = entity[j];
                 // 某个分类的所有菜品

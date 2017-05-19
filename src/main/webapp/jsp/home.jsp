@@ -28,6 +28,9 @@
             $("#diancan").bind('click',function(){
                 window.location="./html/ordering.html";
             });
+            $("#myorder").bind('click', function () {
+                window.location="./html/myOrder.html";
+            });
         })
     </script>
     <link rel="stylesheet" href="./css/css_reset.css" />
@@ -80,7 +83,7 @@
             <div class="circle1">
                 <a>
                     <%--<img alt="" id="logo" src="./img/home/defaultlogo.png">--%>
-                    <img alt="" id="logo" src="./img/log.png">
+                    <img alt="" id="logo" src="./img/wxctlog.png">
                 </a></div>
             <div class="circle2"></div>
         </div>
@@ -120,8 +123,8 @@
             <p>点餐</p>
 
         </div>
-        <div class="pic_one" id="maidan">
-            <img id="maidan_img" src="./img/home/maidan.png" alt="" />
+        <div class="pic_one" id="myorder">
+            <img id="myorder_img" src="./img/home/maidan.png" alt="" />
             <p>我的订单</p>
         </div>
     </div>

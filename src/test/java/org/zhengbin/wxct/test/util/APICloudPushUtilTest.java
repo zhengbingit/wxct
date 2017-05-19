@@ -57,4 +57,9 @@ public class APICloudPushUtilTest {
         System.out.println(json);
     }
 
+    @Test
+    public void test1() {
+        System.out.println(System.getProperty("user.dir"));
+    }
+
 }

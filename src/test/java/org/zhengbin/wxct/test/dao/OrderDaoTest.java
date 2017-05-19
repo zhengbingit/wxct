@@ -26,7 +26,7 @@ public class OrderDaoTest {
 
     @Test
     public void testGetOrderByTableId() {
-        int tableId = 3;
+        int tableId = 1;
         Orders orders = orderDao.getOrderByTableId(tableId);
         LOGGER.debug("order = {}", orders);
         LOGGER.debug("JSON = {}", JsonUtil.toJson(orders));
