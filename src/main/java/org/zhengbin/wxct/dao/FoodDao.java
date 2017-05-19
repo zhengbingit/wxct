@@ -2,6 +2,7 @@ package org.zhengbin.wxct.dao;
 
 import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.annotation.Repository;
+import org.zhengbin.snowflake.framework.bean.Data;
 import org.zhengbin.wxct.model.Food;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,4 +107,23 @@ public class FoodDao {
         }
         return allFoodGroupByFoodGroupList;
     }
+
+    /**
+     * 添加菜品信息
+     * @param food
+     * @return
+     */
+    public boolean addFoodInfo(Food food) {
+        return DatabaseHelper.insertEntity(food) == 1;
+    }
+
+    /**
+     * 删除菜品信息
+     * @param id
+     * @return
+     */
+    public boolean deleteFoodInfo(int id) {
+        return DatabaseHelper.deleteEntityById(Food.class, id);
+    }
+
 }

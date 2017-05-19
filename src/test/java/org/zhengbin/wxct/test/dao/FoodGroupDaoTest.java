@@ -29,4 +29,9 @@ public class FoodGroupDaoTest {
         String groupName = "沙县小吃";
         System.out.println(foodGroupDao.addFoodGroup(groupName));
     }
+
+    @Test
+    public void getFoodGroupInfo() {
+        System.out.println(foodGroupDao.getFoodGroup(1));
+    }
 }

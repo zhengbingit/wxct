@@ -106,8 +106,8 @@
                             ' <span class="caret"></span>'+
                             ' <span class="sr-only">Toggle Dropdown</span></button>'+
                             '<ul class="dropdown-menu" role="menu">'+
-                            '    <li><a href="#" onclick="updateTableInfo('+id+')" data-toggle="modal" data-target=".bs-groupupdate-modal-lg">修改</a></li>'+
-                            '<li><a href="#" onclick="deleteTableInfo('+id+')">删除</a></li></ul></div></td></tr>';
+                            '    <li><a href="#" onclick="updateFoodInfo('+id+')" data-toggle="modal" data-target=".bs-groupupdate-modal-lg">修改</a></li>'+
+                            '<li><a href="#" onclick="deleteFoodInfo('+id+')">删除</a></li></ul></div></td></tr>';
                         $("#tbody"+groupId).append(html);
                     }
                     var footHtml = '</tbody></table></div>';
@@ -118,23 +118,28 @@
             jsonpAjaxDaAsync(url, success, error, data);
         }
 
-        function addTableInfo() {
-            var tableId = $('#modal-add-table-tableid').val();
-            var tableName = $('#modal-add-table-name').val();
-            var tableNum = $('#modal-add-table-num').val();
-            var groupId = $('#modal-add-table-groupid').val();
-            var url = '../admin/addTableInfo';
-            var data = "tableId="+tableId+"&tableName="+tableName+"&tableNum="+tableNum+"&groupId="+groupId;
+        function addFoodInfo() {
+            var name = $('#modal-add-food-name').val();
+            var sellnum = $('#modal-add-food-sellnum').val();
+            var price = $('#modal-add-food-price').val();
+            var detail = $('#modal-add-food-detail').val();
+            var offstok = $('#modal-add-food-offstock').val();
+            var unit = $('#modal-add-food-unit').val();
+            var spell = $('#modal-add-food-spell').val();
+            var groupid = $('#modal-add-food-groupid').val();
+
+            var url = '../admin/addFoodInfo';
+            var data = 'name='+name+'&sellnum='+sellnum+'&price='+price+'&detail='+detail+'&offstok='+offstok+'&unit='+unit+'&spell='+spell+'&groupid='+groupid;
             console.info("data = " + data);
             var success = function (data) {
-                var status = data.status;
+//                var status = data.status;
                 setTimeout(function () { window.location.reload(); }, 500);
             };
             var error = function (data) {};
             jsonpAjaxDaAsync(url, success, error, data);
         }
 
-        function updateTableInfo(id) {
+        function updateFoodInfo(id) {
             var name = $("#food-name-"+id).html();
             var sellnum = $("#food-sellnum-"+id).html();
             var price = $("#food-price-"+id).html();
@@ -156,22 +161,34 @@
         }
 
         function submitUpdate() {
-            var id = $('#modal-add-table-id').val();
-            var num = $('#modal-update-table-num').val();
-            var groupId = $('#modal-update-table-groupid').val();
-            var url = '../admin/updateTableInfo';
-            var data = 'id='+id+'&groupId='+groupId+'&num='+num;
+            var id = $('#modal-update-food-id').val();
+            var name = $('#modal-update-food-name').val();
+            var sellnum = $('#modal-update-food-sellnum').val();
+            var price = $('#modal-update-food-price').val();
+            var detail = $('#modal-update-food-detail').val();
+            var offstok = $('#modal-update-food-offstock').val();
+            var unit = $('#modal-update-food-unit').val();
+            var spell = $('#modal-update-food-spell').val();
+            var groupid = $('#modal-update-food-groupid').val();
+
+            var url = '../admin/updateFoodInfo';
+            var data = 'id='+id+'&name='+name+'&sellnum='+sellnum+'&price='+price+'&detail='+detail+'&offstok='+offstok+'&unit='+unit+'&spell='+spell+'&groupid='+groupid;
             console.info("data = "+data);
             var success = function (data) {
-                setTimeout(function () { window.location.reload(); }, 500);
+                if(data.status) {
+                    setTimeout(function () { window.location.reload(); }, 500);
+                }else {
+                    alert("更新失败！");
+                }
             };
             var error = function (data) {};
             jsonpAjaxDaAsync(url, success, error, data);
         }
 
-        function deleteTableInfo(id) {
-            var url = '../admin/deleteTableInfo';
+        function deleteFoodInfo(id) {
+            var url = '../admin/deleteFoodInfo';
             var data = 'id='+id;
+            console.info('data = '+data);
             var success = function (data) {
                 setTimeout(function () { window.location.reload(); }, 500);
             };
@@ -436,10 +453,10 @@
                         <form id="demo-form-add" data-parsley-validate class="form-horizontal form-label-left">
 
                             <div class="form-group">
-                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-tableid">菜品名：<span class="required">*</span>
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modal-add-food-name">菜品名：<span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input type="text" id="modal-add-food-tableid" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                                    <input type="text" id="modal-add-food-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -496,7 +513,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" onclick="addTableInfo()" class="btn btn-success" data-dismiss="modal">添加</button>
+                        <button type="button" onclick="addFoodInfo()" class="btn btn-success" data-dismiss="modal">添加</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>

@@ -7,6 +7,8 @@ import org.zhengbin.snowflake.framework.annotation.Controller;
 import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.bean.Data;
 import org.zhengbin.snowflake.framework.bean.Param;
+import org.zhengbin.wxct.model.Food;
+import org.zhengbin.wxct.model.Status;
 import org.zhengbin.wxct.service.AdminService;
 
 /**
@@ -72,4 +74,93 @@ public class AdminFoodController {
     public Data getAllFoodInfo() {
         return new Data(adminService.getAllFoodInfo());
     }
+
+    /**
+     * 更新菜品信息
+     * @param param
+     * @return
+     */
+    @Action("post:/admin/updateFoodInfo")
+    public Data updateFoodInfo(Param param) {
+        int id = param.getInt("id");
+        String name = param.getString("name");
+        int sellnum = param.getInt("sellnum");
+        double price = param.getDouble("price");
+        String detail = param.getString("detail");
+        String offstok = param.getString("offstok");
+        int offstokv;
+        if (offstok.equals("否")) {
+            offstokv = 0;
+        }else {
+            offstokv = 1;
+        }
+        String unit = param.getString("unit");
+        String spell = param.getString("spell");
+        int groupId = param.getInt("groupid");
+        Food food = new Food();
+        food.setId(id);
+        food.setName(name);
+        food.setSell_num(sellnum);
+        food.setPrice(price);
+        food.setDetail(detail);
+        food.setOff_stock(offstokv);
+        food.setUnit(unit);
+        food.setSpell(spell);
+        food.setGroup_id(groupId);
+        LOGGER.debug("FOOD = {}" + food);
+        Status status = new Status();
+        status.setStatus(adminService.updateFoodInfo(food));
+        return new Data(status);
+    }
+
+    /**
+     * 删除菜品信息
+     * @param param
+     * @return
+     */
+    @Action("post:/admin/deleteFoodInfo")
+    public Data deleteFoodInfo(Param param) {
+        int id = param.getInt("id");
+        LOGGER.debug("id = {}", id);
+        Status status = new Status();
+        status.setStatus(adminService.deleteFoodInfo(id));
+        return new Data(status);
+    }
+
+    /**
+     * 添加菜品信息
+     * @param param
+     * @return
+     */
+    @Action("post:/admin/addFoodInfo")
+    public Data addFoodInfo(Param param) {
+        String name = param.getString("name");
+        int sellnum = param.getInt("sellnum");
+        double price = param.getDouble("price");
+        String detail = param.getString("detail");
+        String offstok = param.getString("offstok");
+        int offstokv;
+        if (offstok.equals("否")) {
+            offstokv = 0;
+        }else {
+            offstokv = 1;
+        }
+        String unit = param.getString("unit");
+        String spell = param.getString("spell");
+        int groupId = param.getInt("groupid");
+        Food food = new Food();
+        food.setName(name);
+        food.setSell_num(sellnum);
+        food.setPrice(price);
+        food.setDetail(detail);
+        food.setOff_stock(offstokv);
+        food.setUnit(unit);
+        food.setSpell(spell);
+        food.setGroup_id(groupId);
+        LOGGER.debug("FOOD = {}" + food);
+        Status status = new Status();
+        status.setStatus(adminService.addFoodInfo(food));
+        return new Data(status);
+    }
+
 }

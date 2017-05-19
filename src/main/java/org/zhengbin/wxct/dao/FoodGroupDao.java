@@ -53,4 +53,14 @@ public class FoodGroupDao {
     public int deleteFoodGroups(String ids) {
         return DatabaseHelper.deleteEntitysByIds(FoodGroup.class, ids);
     }
+
+    /**
+     * 获取单个菜品分类信息
+     * @param groupId
+     * @return
+     */
+    public String getFoodGroup(int groupId) {
+        String sql = "select * from foodgroup where id = ?";
+        return DatabaseHelper.queryColumn("name", sql, groupId);
+    }
 }

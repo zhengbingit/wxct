@@ -182,8 +182,8 @@ public class QrCodeTest {
     public static void main(String[] args) {
 //        System.out.println(System.getProperty("user.dir"));
         // 生成二维码
-        BufferedImage qrCode = QrcodeImage("http://192.168.0.100:8080/wxct/hello?tableId=1");
-        writeImage(qrCode, "/Users/zhengbinMac/Workspaces/IDEA/qecode3.png");
+        BufferedImage qrCode = QrcodeImage("http://192.168.43.26:8080/wxct/hello?tableId=1");
+        writeImage(qrCode, "/Users/zhengbinMac/Workspaces/IDEA/1号桌台.png");
 //        String qrCodePath = "/Users/zhengbinMac/Documents/qrcode/qecode3.png";
 //        System.out.println(decodeImg(qrCodePath));
         // 生成带有图片logo的二维码

@@ -217,4 +217,33 @@ public class AdminService {
     public List<FoodGroup> getAllFoodInfo() {
         return foodDao.getAllFoodInfo();
     }
+
+    /**
+     * 更新菜品信息
+     * @param food
+     * @return
+     */
+    public boolean updateFoodInfo(Food food) {
+        return foodDao.updateFood(food);
+    }
+
+    /**
+     * 删除菜品信息
+     * @param id
+     * @return
+     */
+    public boolean deleteFoodInfo(int id) {
+        return foodDao.deleteFoodInfo(id);
+    }
+
+    /**
+     * 添加菜品信息
+     * @param food
+     * @return
+     */
+    public boolean addFoodInfo(Food food) {
+        String groupName = foodGroupDao.getFoodGroup(food.getGroup_id());
+        food.setGroup_name(groupName);
+        return foodDao.addFoodInfo(food);
+    }
 }
