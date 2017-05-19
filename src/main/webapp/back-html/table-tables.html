@@ -89,7 +89,7 @@
                         ' <span class="caret"></span>'+
                         ' <span class="sr-only">Toggle Dropdown</span></button>'+
                         '<ul class="dropdown-menu" role="menu">'+
-                        '<li><a href="#" onclick="getQrCode('+id+')">下载二维码</a>'+
+                        '<li><a href="#" data-toggle="modal" data-target=".bs-qrcode-modal-sm" onclick="getQrCode('+id+')">查看二维码</a>'+
                         '<li><a href="#" onclick="updateTableInfo('+id+')" data-toggle="modal" data-target=".bs-groupupdate-modal-lg">修改</a></li>'+
                         '<li><a href="#" onclick="deleteTableInfo('+id+')">删除</a></li></li></ul></div></td></tr>';
                         $("#tbody"+groupId).append(html);
@@ -156,8 +156,7 @@
         }
 
         function getQrCode(id) {
-            var url = '';
-            var data = 'id=' + id;
+            $("#tableQrcode").attr("src", "../qrcodeimg/qrcode-"+id+".png");
         }
     </script>
 </head>
@@ -478,6 +477,28 @@
                                 </div>
                             </div>
                         </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="submitUpdate()" class="btn btn-success" data-dismiss="modal">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 二维码 -->
+        <div class="modal fade bs-qrcode-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="">桌台二维码</h4>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                        <img id="tableQrcode" src="../qrcodeimg/qrcode-1.png">
                     </div>
                     <div class="modal-footer">
                         <button type="button" onclick="submitUpdate()" class="btn btn-success" data-dismiss="modal">保存</button>

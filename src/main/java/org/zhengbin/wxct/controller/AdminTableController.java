@@ -7,6 +7,8 @@ import org.zhengbin.snowflake.framework.annotation.Controller;
 import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.bean.Data;
 import org.zhengbin.snowflake.framework.bean.Param;
+import org.zhengbin.snowflake.framework.helper.ServletHelper;
+import org.zhengbin.snowflake.framework.util.QrCodeUtil;
 import org.zhengbin.wxct.constants.TableStatusConstant;
 import org.zhengbin.wxct.model.Status;
 import org.zhengbin.wxct.model.Table;
@@ -101,7 +103,7 @@ public class AdminTableController {
         // 默认空闲中
         table.setStatus(TableStatusConstant.KONG_XIAN_ZHONG);
         Status status = new Status();
-        status.setStatus(adminService.addTableInfo(table));
+        status.setStatus(adminService.addTableInfo(table)!=0);
         return new Data(status);
     }
 

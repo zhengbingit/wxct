@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zhengbin.snowflake.framework.annotation.Inject;
 import org.zhengbin.snowflake.framework.annotation.Service;
+import org.zhengbin.snowflake.framework.helper.ServletHelper;
 import org.zhengbin.snowflake.framework.util.FileUtil;
+import org.zhengbin.snowflake.framework.util.QrCodeUtil;
 import org.zhengbin.wxct.dao.*;
 import org.zhengbin.wxct.model.*;
 
@@ -180,12 +182,23 @@ public class AdminService {
 
     /**
      * 添加桌台信息
+     * 生成二维码
      *
      * @param table
      * @return
      */
-    public boolean addTableInfo(Table table) {
-        return tableDao.addTable(table);
+    public int addTableInfo(Table table) {
+        String realPath = ServletHelper.getSession().getServletContext().getRealPath("");
+        realPath = realPath.substring(0, realPath.lastIndexOf("target"));
+        // 桌台信息落库
+        tableDao.addTable(table);
+        // 获得最后一个桌台id
+        int id = tableDao.getTableLastInfo();
+        String content = "http://192.168.43.26:8080/wxct/hello?tableId="+id;
+        String imgPath = realPath+"/src/main/webapp/qrcodeimg/qrcode-"+id+".png";
+        LOGGER.debug("content = {}, imgPath = {}", content, imgPath);
+        QrCodeUtil.createQrcodeImage(imgPath, content);
+        return id;
     }
 
     /**
@@ -246,4 +259,5 @@ public class AdminService {
         food.setGroup_name(groupName);
         return foodDao.addFoodInfo(food);
     }
+
 }

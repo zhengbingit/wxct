@@ -85,9 +85,9 @@ public class TableDao {
      * 添加桌台信息
      * @return
      */
-    public boolean addTable(Table table) {
+    public int addTable(Table table) {
         String sql = "insert into `table`(group_id, num, name, table_id, status) VALUES (?, ?, ?, ?, ?)";
-        return DatabaseHelper.executeUpdate(sql, table.getGroup_id(), table.getNum(), table.getName(), table.getTable_id(), table.getStatus()) == 1;
+        return DatabaseHelper.executeUpdate(sql, table.getGroup_id(), table.getNum(), table.getName(), table.getTable_id(), table.getStatus());
     }
 
     /**
@@ -108,5 +108,15 @@ public class TableDao {
     public boolean deleteTableInfo(int id) {
         String sql = "delete from `table` where id=?";
         return DatabaseHelper.executeUpdate(sql, id) == 1;
+    }
+
+    /**
+     * 返回当前桌台表中最后一项的id
+     * @return
+     */
+    public int getTableLastInfo() {
+        String sql = "select id from `table` order by id desc limit 1";
+        int id = DatabaseHelper.queryColumn("id", sql);
+        return id;
     }
 }

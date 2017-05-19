@@ -23,4 +23,12 @@ public class CacheTest {
         List<FoodArray> foodArrayList = FoodArrayCacheUtil.getFoodArrayListByKey("A02");
         LOGGER.debug("foodArrayList = {}", foodArrayList);
     }
+
+    @Test
+    public void test() {
+        String path = "/Users/zhengbinMac/Workspaces/IDEA/wxct/target/wxct-1.0.0";
+        int end = path.lastIndexOf("target");
+        LOGGER.debug("subString = {}",path.substring(0, end));
+    }
+
 }
