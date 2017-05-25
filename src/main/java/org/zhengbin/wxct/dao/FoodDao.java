@@ -22,9 +22,9 @@ public class FoodDao {
     @Inject
     private FoodGroupDao foodGroupDao;
 
-    private static final String COLUMN_TABLE = "id, `name`, rest_num, sell_num, price, detail," +
-                                                " group_id, nature_id, big_img, small_img," +
-                                                " group_name, nature_name, unit, off_stock," +
+    private static final String COLUMN_TABLE = "id, `name`, sell_num, price, detail," +
+                                                " group_id, big_img, small_img," +
+                                                " group_name, unit, off_stock," +
                                                 " trade_time, spell";
     private static final String COLUMN_TABLE_FOODGROUP = "id, name";
     /**

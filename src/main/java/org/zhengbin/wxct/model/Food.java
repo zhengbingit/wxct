@@ -8,21 +8,18 @@ public class Food {
     private Integer id;             // 菜品 id
     private String name;            // 菜品名称
     private Double price;           // 菜品价格
-    private Integer rest_num;       // 菜品余量
     private Integer sell_num;       // 菜品历史已售量
     private String detail;          // 菜品详情（描述）
     private String big_img;         // 菜品小图地址
     private String small_img;       // 菜品大图地址
     private Integer group_id;       // 菜品分类 id
     private String group_name;      // 菜品分类名
-    private String nature_name;     // 菜品额外属性
     private String unit;            // 菜品的单位
     private Integer off_stock;      // 是否估清
     private String trade_name;      // 菜品售卖时间段
     private String spell;           // 菜品的拼音首字母
 
     private FoodGroup foodGroup;    // 菜品分类详情
-    private FoodNature foodNature;  // 菜品额外属性详情
 
     @Override
     public String toString() {
@@ -30,20 +27,17 @@ public class Food {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", rest_num=" + rest_num +
                 ", sell_num=" + sell_num +
                 ", detail='" + detail + '\'' +
                 ", big_img='" + big_img + '\'' +
                 ", small_img='" + small_img + '\'' +
                 ", group_id=" + group_id +
                 ", group_name='" + group_name + '\'' +
-                ", nature_name='" + nature_name + '\'' +
                 ", unit='" + unit + '\'' +
                 ", off_stock=" + off_stock +
                 ", trade_name='" + trade_name + '\'' +
                 ", spell='" + spell + '\'' +
                 ", foodGroup=" + foodGroup +
-                ", foodNature=" + foodNature +
                 '}';
     }
 
@@ -69,14 +63,6 @@ public class Food {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Integer getRest_num() {
-        return rest_num;
-    }
-
-    public void setRest_num(Integer rest_num) {
-        this.rest_num = rest_num;
     }
 
     public Integer getSell_num() {
@@ -127,14 +113,6 @@ public class Food {
         this.group_name = group_name;
     }
 
-    public String getNature_name() {
-        return nature_name;
-    }
-
-    public void setNature_name(String nature_name) {
-        this.nature_name = nature_name;
-    }
-
     public String getUnit() {
         return unit;
     }
@@ -151,22 +129,6 @@ public class Food {
         this.off_stock = off_stock;
     }
 
-    public FoodGroup getFoodGroup() {
-        return foodGroup;
-    }
-
-    public void setFoodGroup(FoodGroup foodGroup) {
-        this.foodGroup = foodGroup;
-    }
-
-    public FoodNature getFoodNature() {
-        return foodNature;
-    }
-
-    public void setFoodNature(FoodNature foodNature) {
-        this.foodNature = foodNature;
-    }
-
     public String getTrade_name() {
         return trade_name;
     }
@@ -181,5 +143,13 @@ public class Food {
 
     public void setSpell(String spell) {
         this.spell = spell;
+    }
+
+    public FoodGroup getFoodGroup() {
+        return foodGroup;
+    }
+
+    public void setFoodGroup(FoodGroup foodGroup) {
+        this.foodGroup = foodGroup;
     }
 }
